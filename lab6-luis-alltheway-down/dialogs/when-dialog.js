@@ -9,7 +9,7 @@ module.exports = new builder.WaterfallDialog([
         if (reservation.when) {
             session.endDialogWithResult({ response: reservation.when });
         } else {
-            builder.Prompts.time(session, constants.messages.WHEN_REQUEST);
+            builder.Prompts.time(session, constants.messages.WHEN_REQUEST, { retryPrompt: constants.messages.WHEN_UNRECOGNIZED });
         }
     },
     (session, results, next) => {
@@ -21,9 +21,6 @@ module.exports = new builder.WaterfallDialog([
             session.send(constants.messages.WHEN_CONFIRMATION, reservation.restaurant.name, moment(when).format('LLLL'));
 
             session.endDialogWithResult({ response: reservation.when });
-
-        } else {
-            session.send(constants.messages.WHEN_UNRECOGNIZED);
         }
     }
 ]);

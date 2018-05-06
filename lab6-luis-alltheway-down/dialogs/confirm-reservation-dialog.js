@@ -26,7 +26,11 @@ module.exports = new builder.WaterfallDialog([
                 .text(prompt)
                 .attachments([card.toAttachment()]);
 
-            builder.Prompts.choice(session, msg, 'Reserve');
+            var retryPrompt = new builder.Message(session)
+                .text(constants.messages.CONFIRMATION_UNRECOGNIZED)
+                .attachments([card.toAttachment()]);
+
+            builder.Prompts.choice(session, msg, 'Reserve', { retryPrompt: retryPrompt });
         }
     },
     (session, results, next) => {
@@ -34,8 +38,6 @@ module.exports = new builder.WaterfallDialog([
 
         if (results.response.entity === 'Reserve') {
             session.endDialogWithResult({ response: reservation });
-        } else {
-            session.send(constants.messages.CONFIRMATION_UNRECOGNIZED);
         }
     }
 ]);

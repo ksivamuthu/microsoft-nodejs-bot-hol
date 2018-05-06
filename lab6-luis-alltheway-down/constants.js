@@ -20,7 +20,7 @@ module.exports = {
         "CONFIRMATION_UNRECOGNIZED": "I'm sorry, I didn't understand your repsonse.  Click the **Reserve** button to confirm your reservation.",
         "CUISINE_CONFIRMATION": "Alright, let's see what we can find.",
         "CUISINE_REQUEST": "What type of food are you in the mood for?",
-        "CUISINE_UNRECOGNIZED": "Hmm, I can't seem to find any any *%s* restaurants in your area.  Here are some options that I did find:",
+        "CUISINE_UNRECOGNIZED": "Hmm, I can't seem to find any *%s* restaurants in your area.  Here are some options that I did find:",
         "GREETING": "Sure, I can help you with that.",
         "LOCATION_CONFIRMATION": "Alright, **%s** it is. I'll look for options in  your area.",
         "LOCATION_REQUEST": "Where will you be eating?  I'll look for restaurants in your area.",

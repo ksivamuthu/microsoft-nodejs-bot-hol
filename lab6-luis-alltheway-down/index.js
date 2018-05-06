@@ -3,6 +3,7 @@ var builder = require("botbuilder");
 var botbuilder_azure = require("botbuilder-azure");
 var path = require('path');
 var constants = require('./constants');
+var _ = require('lodash');
 
 var useEmulator = (process.env.NODE_ENV == 'development');
 
@@ -39,13 +40,13 @@ bot.recognizer(recognizer);
 
 // Create Reservation Dialog
 bot.dialog('CreateReservationDialog', require('./dialogs/create-reservation-dialog'))
-.triggerAction({
-    matches: [
-        constants.intents.CREATE_RESERVATION, constants.intents.SET_RESERVATION_CUISINE,
-        constants.intents.SET_RESERVATION_DATE, constants.intents.SET_RESERVATION_LOCATION,
-        constants.intents.SET_RESERVATION_PARTY_SIZE
-    ]
-});
+    .triggerAction({
+        matches: [
+            constants.intents.CREATE_RESERVATION, constants.intents.SET_RESERVATION_CUISINE,
+            constants.intents.SET_RESERVATION_DATE, constants.intents.SET_RESERVATION_LOCATION,
+            constants.intents.SET_RESERVATION_PARTY_SIZE
+        ]
+    });
 
 bot.dialog('LocationDialog', require('./dialogs/location-dialog'));
 bot.dialog('CuisineDialog', require('./dialogs/cuisine-dialog'));

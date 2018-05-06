@@ -34,8 +34,8 @@ module.exports = new builder.WaterfallDialog([
                     .text(prompt)
                     .suggestedActions(suggestedActions);
 
-                    builder.Prompts.choice(session, msg, choices);
-                });
+                builder.Prompts.choice(session, msg, choices);
+            });
         }
     },
     (session, results, next) => {

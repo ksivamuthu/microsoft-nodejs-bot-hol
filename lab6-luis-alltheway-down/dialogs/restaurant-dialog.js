@@ -42,7 +42,6 @@ module.exports = new builder.WaterfallDialog([
                     }
                 });
         }
-        
     },
     (session, results, next) => {
         var reservation = session.privateConversationData.reservation;
@@ -55,7 +54,9 @@ module.exports = new builder.WaterfallDialog([
                 session.send(constants.messages.RESTAURANT_CONFIRMATION, restaurant.name);
 
                 session.endDialogWithResult({ response: reservation });
-            } 
+            }   else {
+                session.send(constants.messages.RESTAURANT_UNRECOGNIZED)
+            }
         });
     }
 ]);

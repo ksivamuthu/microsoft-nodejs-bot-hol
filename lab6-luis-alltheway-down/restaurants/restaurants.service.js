@@ -29,6 +29,8 @@ function hasRestaurants(location) {
         qs: { 'street-address': location }
     }).then(function (value) {
         return value.restaurants.length > 0;
+    }).catch((err)=> { 
+        return false;
     });
 }
 
@@ -37,7 +39,9 @@ function hasRestaurantsWithCuisine(location, cuisine) {
         qs: { 'street-address': location }
     }).then(function (value) {
         return _.sumBy(value.restaurants, (x) => _.some(x.foodTypes, (f) => { return f.toLowerCase() === cuisine.toLowerCase(); }))
-    });
+    }).catch((err)=> { 
+        return false;
+    });;
 }
 
 function getRestaurants(location, cuisine) {

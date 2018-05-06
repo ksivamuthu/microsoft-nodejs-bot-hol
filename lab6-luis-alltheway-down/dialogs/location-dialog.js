@@ -4,7 +4,7 @@ var constants = require('../constants');
 var util = require('util');
 
 module.exports = new builder.WaterfallDialog([
-    (session, results, next) => {
+    (session, args, next) => {
         var reservation = session.privateConversationData.reservation;
 
         if (reservation.location) {
@@ -16,7 +16,7 @@ module.exports = new builder.WaterfallDialog([
                 }
             });
         } else {
-            builder.Prompts.text(session, constants.messages.LOCATION_REQUEST);
+            builder.Prompts.text(session, args && args.reprompt ? args.msg : constants.messages.LOCATION_REQUEST);
         }
     },
     (session, results, next) => {
@@ -34,7 +34,8 @@ module.exports = new builder.WaterfallDialog([
                 session.endDialogWithResult({ response: location })
 
             } else {
-                session.send(constants.messages.LOCATION_UNRECOGNIZED);
+                // Reprompt the dialog
+                session.replaceDialog('LocationDialog', { reprompt: true,  msg: constants.messages.LOCATION_UNRECOGNIZED });
             }
         });
     }
