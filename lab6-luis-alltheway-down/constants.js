@@ -1,4 +1,18 @@
 module.exports = {
+    entity: {
+        locationKey: 'RestaurantReservation.Address',
+        cuisineKey: 'RestaurantReservation.Cuisine',
+        datetimeKey: 'builtin.datetimeV2.datetime',
+        timeKey: 'builtin.datetimeV2.time',
+        partySizeKey: 'builtin.number'
+    },
+    intents: {
+        CREATE_RESERVATION: 'Create Reservation',
+        SET_RESERVATION_CUISINE: 'Set Reservation Cuisine',
+        SET_RESERVATION_DATE: 'Set Reservation Date',
+        SET_RESERVATION_PARTY_SIZE: 'Set Reservation Party Size',
+        SET_RESERVATION_LOCATION: 'Set Reservation Location'
+    },
     messages: {
         "BOOKED_CONFIRMATION": "Alright, you're all set for **%s** on **%s** at **%s**.  I hope you have a great time!  Good-bye!",
         "CANCEL_CONFIRMATION": "OK, I'll be here if you need me.  Good-bye!",

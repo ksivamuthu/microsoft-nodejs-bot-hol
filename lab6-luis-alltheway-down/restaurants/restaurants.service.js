@@ -10,7 +10,7 @@ var eatAPIRequest = request.defaults({
         'X-Access-Token': config.EAT_STREET_API_KEY
     }, qs: {
         'method': 'both',
-        'pickup-radius': 1
+        'pickup-radius': 20
     }
 });
 

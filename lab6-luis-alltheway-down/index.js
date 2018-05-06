@@ -39,24 +39,20 @@ bot.recognizer(recognizer);
 
 // Create Reservation Dialog
 bot.dialog('CreateReservationDialog', require('./dialogs/create-reservation-dialog'))
-    .triggerAction({ matches: 'Create Reservation' });
+.triggerAction({
+    matches: [
+        constants.intents.CREATE_RESERVATION, constants.intents.SET_RESERVATION_CUISINE,
+        constants.intents.SET_RESERVATION_DATE, constants.intents.SET_RESERVATION_LOCATION,
+        constants.intents.SET_RESERVATION_PARTY_SIZE
+    ]
+});
 
-bot.dialog('LocationDialog', require('./dialogs/location-dialog'))
-    .triggerAction({ matches: 'Set Reservation Location' });
-
-bot.dialog('CuisineDialog', require('./dialogs/cuisine-dialog'))
-    .triggerAction({ matches: 'Set Reservation Cuisine' });;
-
-bot.dialog('WhenDialog', require('./dialogs/when-dialog'))
-    .triggerAction({ matches: 'Set Reservation Date' });
-
-bot.dialog('PartySizeDialog', require('./dialogs/party-size-dialog'))
-    .triggerAction({ matches: 'Set Reservation Party Size' });
-
+bot.dialog('LocationDialog', require('./dialogs/location-dialog'));
+bot.dialog('CuisineDialog', require('./dialogs/cuisine-dialog'));
 bot.dialog('RestaurantDialog', require('./dialogs/restaurant-dialog'));
-bot.dialog('ConfirmReservationDialog', require('./dialogs/confirmation-dialog'));
-
-
+bot.dialog('WhenDialog', require('./dialogs/when-dialog'));
+bot.dialog('PartySizeDialog', require('./dialogs/party-size-dialog'));
+bot.dialog('ConfirmReservationDialog', require('./dialogs/confirm-reservation-dialog'));
 
 if (useEmulator) {
     var restify = require('restify');

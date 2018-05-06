@@ -8,53 +8,56 @@ module.exports = new builder.WaterfallDialog([
     (session, results, next) => {
         var reservation = session.privateConversationData.reservation;
 
-        if (!reservation.cuisine) {
-            var prompt = util.format(constants.messages.CUISINE_REQUEST);
-            sendCuisineSelectionMessage(session, prompt, reservation);
+        if (reservation.cuisine) {
+            restaurantService.hasRestaurantsWithCuisine(reservation.location, reservation.cuisine).then((hasRestaurants) => {
+                if (hasRestaurants) {
+                    session.endDialogWithResult({ response: reservation.cuisine });
+                } else {
+                    session.send(util.format(constants.messages.CUISINE_UNRECOGNIZED, reservation.cuisine));
+                }
+            });
         } else {
-            session.beginDialog('RestaurantDialog');
+            sendCuisineSelectionMessage(session, constants.messages.CUISINE_REQUEST, reservation);
         }
 
         function sendCuisineSelectionMessage(session, prompt, reservation) {
             return restaurantService.getCuisines(reservation.location).then((cuisines) => {
+
                 var cardActions = _.map(cuisines, (x) => {
-                    return builder.CardAction.imBack(session, x.name , `${x.name} (${x.count})`);                
+                    return builder.CardAction.imBack(session, x.name, `${x.name} (${x.count})`);
                 });
 
-                var choices = _.map(cuisines, (x) => {
-                    return x.name;
-                });
+                var choices = _.map(cuisines, (x) => { return x.name; });
+                var suggestedActions = builder.SuggestedActions.create(session, cardActions);
 
                 var msg = new builder.Message(session)
                     .text(prompt)
-                    .suggestedActions(
-                        builder.SuggestedActions.create(
-                            session, cardActions
-                        ));
-                builder.Prompts.choice(session, msg, choices);            
-            });
+                    .suggestedActions(suggestedActions);
+
+                    builder.Prompts.choice(session, msg, choices);
+                });
         }
     },
     (session, results, next) => {
+
         var reservation = session.privateConversationData.reservation;
         var cuisine = results.response && results.response.entity;
+
         if (cuisine) {
             restaurantService.hasRestaurantsWithCuisine(reservation.location, cuisine).then((hasRestaurants) => {
                 if (hasRestaurants) {
                     // Update private conversation data
                     reservation.cuisine = cuisine;
-    
+
                     // Send confirmation message
                     session.send(constants.messages.CUISINE_CONFIRMATION);
-    
-                    session.beginDialog('RestaurantDialog');
-    
-                    return;
+
+                    session.endDialogWithResult({ response: reservation.cuisine });
+
                 } else {
                     session.send(util.format(constants.messages.CUISINE_UNRECOGNIZED, cuisine));
                 }
-            });            
+            });
         }
-        next();
     }
 ]);
