@@ -46,7 +46,7 @@ bot.dialog('CuisineDialog', require('./dialogs/cuisine-dialog'));
 bot.dialog('RestaurantDialog', require('./dialogs/restaurant-dialog'));
 bot.dialog('WhenDialog', require('./dialogs/when-dialog'));
 bot.dialog('PartySizeDialog', require('./dialogs/party-size-dialog'));
-bot.dialog('ConfirmReservationDialog', require('./dialogs/confirmation-dialog'));
+bot.dialog('ConfirmReservationDialog', require('./dialogs/confirm-reservation-dialog'));
 
 if (useEmulator) {
     var restify = require('restify');

@@ -6,31 +6,36 @@ var util = require('util');
 module.exports = new builder.WaterfallDialog([
     (session, results, next) => {
         var reservation = session.privateConversationData.reservation;
-        if (!reservation.location) {
-            builder.Prompts.text(session, constants.messages.LOCATION_REQUEST);
+
+        if (reservation.location) {
+            restaurantService.hasRestaurants(reservation.location).then((hasResaurants) => {
+                if (hasResaurants) {
+                    session.endDialogWithResult({ response: reservation.location });
+                } else {
+                    session.send(constants.messages.LOCATION_UNRECOGNIZED);
+                }
+            });
         } else {
-            session.beginDialog('CuisineDialog');
+            builder.Prompts.text(session, constants.messages.LOCATION_REQUEST);
         }
     },
     (session, results, next) => {
-        var reservation = session.privateConversationData.reservation;
         var location = results.response;
-        if (location) {            
-            restaurantService.hasRestaurants(location).then(function(hasResaurants) {
-                if (hasResaurants) {
-                    // Update private conversation data
-                    reservation.location = location;
-    
-                    // Send confirmation message
-                    session.send(util.format(constants.messages.LOCATION_CONFIRMATION, location));
-    
-                    session.beginDialog('CuisineDialog');
-                    return;
-                } else {
-                    session.send(constants.messages.LOCATION_UNRECOGNIZED);
-                } 
-            });            
-        } 
-        next();
+
+        var reservation = session.privateConversationData.reservation;
+
+        restaurantService.hasRestaurants(location).then((hasResaurants) => {
+            if (hasResaurants) {
+                // Update private conversation data
+                reservation.location = location;
+
+                // Send confirmation message
+                session.send(util.format(constants.messages.LOCATION_CONFIRMATION, location));
+                session.endDialogWithResult({ response: location })
+
+            } else {
+                session.send(constants.messages.LOCATION_UNRECOGNIZED);
+            }
+        });
     }
 ]);
