@@ -2,7 +2,7 @@
 
 Hello everyone !!! This is series of hands-on-labs as end-to-end guide to building conversational experience using the Microsoft NodeJS Bot framework. 
 
-First of all, my since thanks and credits goes to Geoff Tewskbury's for the detailed hands on labs. If you want to checkout .NET Bot framework Hands on lab of the same demo, please refer [Geoff Tewskbury's github repository](https://github.com/gtewksbury/Microsoft-Bot-Framework-HOL). Most of the common steps/images are shared between two repositories.
+First of all, my sincere thanks and credits goes to Geoff Tewskbury's for the detailed hands on labs. If you want to checkout .NET Bot framework Hands on lab of the same demo, please refer [Geoff Tewskbury's github repository](https://github.com/gtewksbury/Microsoft-Bot-Framework-HOL). Most of the common steps/images are shared between two repositories.
 
 ![Screenshot](images/bot-slack.png)
 
