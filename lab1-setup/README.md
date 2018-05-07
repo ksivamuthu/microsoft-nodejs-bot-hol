@@ -108,7 +108,7 @@ You should see that the bot responds to each message you send by echoing back
 
 `You sent <message> which was <message length> characters`
 
-For eg: If you send `hello`, you might see `You send hello which was 5 characters`
+For eg: If you send `hello`, you might see `You sent hello which was 5 characters`
 
 You've successfully created your first bot using the Bot Builder SDK for Node.js!
 
