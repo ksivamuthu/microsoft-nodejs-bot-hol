@@ -1,6 +1,6 @@
 # Lab 1 - Bot Framework Setup
 
-In this lab, we'll setup our Visual Studio .NET Bot Framework development environment.  This includes the following:
+In this lab, we'll setup our Visual Studio NodeJS Bot Framework development environment.  This includes the following:
 
 1.	Creating and running our first *Hello World* bot project
 2.  Running and debugging through vscode and bot emulator
@@ -23,7 +23,6 @@ Follow the prompt on the screen to enter information about your bot and npm will
 ## Installing the Bot emulator
 
 You can [download](https://emulator.botframework.com) and install the emulator. After the download completes, launch the executable and complete the installation process.
-
 
 ## Creating a first project.
 
@@ -105,20 +104,24 @@ After you start your bot, connect to your bot in the emulator:
 ### Try out your bot
 
 Now that your bot is running locally and is connected to the emulator, try out your bot by typing a few messages in the emulator.
-You should see that the bot responds to each message you send by echoing back your message prefixed with the text *"You said:"*.
+You should see that the bot responds to each message you send by echoing back 
+
+`You sent <message> which was <message length> characters`
+
+For eg: If you send `hello`, you might see `You send hello which was 5 characters`
 
 You've successfully created your first bot using the Bot Builder SDK for Node.js!
 
 ## Quick Recap
 
-Congratulations, you now have a complete VSCode development environment capable of debugging custom bot applications!  Alright, I admit it, the sample bot we created isn't very exciting.  But hey, you're now setup and ready to create exciting new user experiences!  
+Congratulations, you now have a complete VSCode development environment capable of debugging custom bot applications! 
 
 Throughout the remainder of the labs, we'll be building out a bot that helps users make restaurant reservations.  Users will be able to ask our bot things like:
 
 *	Make me a reservation at a good Indian restaurant in Pittsburgh
 *	Can you book me a table tomorrow night at 7:30 for Mexican?
 
-But wait a minute, we're simply sending text-based messages to our bot.  How can we possibly parse and interpret all the variations of how users might ask for a reservation?  That my friends is where Natural Language processing and Machine Learning comes in.
+But wait a minute, we're simply sending text-based messages to our bot.  How can we possibly parse and interpret all the variations of how users might ask for a reservation?  Thats where Natural Language processing and Machine Learning comes in.
 
 ## Next Steps
 In [Lab 2](https://github.com/gtewksbury/Microsoft-Bot-Framework-HOL/tree/master/lab%202%20-%20LUIS) we'll build a machine learning model using Microsoft's Language Understanding Intelligence Service (known as LUIS) to give our bot some smarts.
