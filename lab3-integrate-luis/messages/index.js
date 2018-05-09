@@ -16,7 +16,7 @@ var connector = new botbuilder_azure.BotServiceConnector({
 // match any intents handled by other dialogs.
 
 var bot = new builder.UniversalBot(connector, function (session, args) {
-    
+    session.send('Sorry, I don\'t understand.  I only know how to make restaurant reservations.');
 });
 
 // Set inMemory Storage
@@ -51,6 +51,8 @@ bot.dialog('CreateReservationDialog',
         var when = builder.EntityRecognizer.findEntity(intent.entities, whenKey);
         var partySize = builder.EntityRecognizer.findEntity(intent.entities, partySizeKey);
 
+        session.send('Looks like your attempting to create a reservation.  Let\'s see what information we were able to pull');
+
         session.privateConversationData.reservation = {
             location: location ? location.entity : null,
             cuisine: cuisine ? cuisine.entity : null,
@@ -60,7 +62,7 @@ bot.dialog('CreateReservationDialog',
 
         next();
     },
-    (session, results, next) => {
+    (session, results, next) => {        
         var reservation = session.privateConversationData.reservation;
         if (reservation != null) {
             if (reservation.location) {
@@ -79,7 +81,7 @@ bot.dialog('CreateReservationDialog',
                 session.send(`Party Size Preference: ${reservation.partySize}`);
             }
         }
-        next();
+        session.endConversation(); // Without this, the stored data will be persisted in this conversation
     }]
 ).triggerAction({
     matches: 'Create Reservation'

@@ -93,3 +93,14 @@ bot.dialog('CreateReservationDialog',
 });
 
 ```
+
+## Demo
+![](../images/luis-demo/luis-demo.gif)
+
+## Quick Recap
+
+In this lab, we successfully connected our bot to our LUIS application, and configured our Create Reservation triggerAction. We also learned how to retrieve value from entities. Finally, we learned how to persist and retrieve state for our bot application.
+
+## Next Steps
+
+At this point in the labs we were able to configure our RootDialog to handle multiple user intents, but we're yet to do anything useful with the provided information. In subsequent labs, we'll create a more sophisticated conversational flow with multiple dialogs. However, before doing so I thought it would be a good idea to become familiar with some basic NodeJS Bot Builder concepts. In [Lab 4](../lab4-bot-builder) we'll focus on learning these concepts before moving back to enhance our bot!
