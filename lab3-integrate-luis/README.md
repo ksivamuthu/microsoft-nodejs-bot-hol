@@ -1,4 +1,4 @@
-# Integrate LUIS
+# Lab 3 - Integrate LUIS
 
 In this lab, we are going to integrate the sample bot created in [Lab 1 - Setup](../lab1-setup) with the LUIS model trained in [Lab2 - LUIS](../lab2-luis).
 
