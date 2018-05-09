@@ -1,0 +1,6 @@
+{
+  "azureFunctions.projectLanguage": "JavaScript",
+  "azureFunctions.projectRuntime": "beta",
+  "git.ignoreLimitWarning": true,
+  "azureFunctions.templateFilter": "Verified"
+}
