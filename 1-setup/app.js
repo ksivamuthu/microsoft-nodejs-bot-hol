@@ -12,3 +12,4 @@ class App {
 }
 const app = new App();
 app.run();
+//# sourceMappingURL=app.js.map

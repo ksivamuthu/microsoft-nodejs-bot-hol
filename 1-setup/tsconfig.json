@@ -10,7 +10,6 @@
         "noUnusedLocals": true,
         "strict": true,
         "noFallthroughCasesInSwitch": true,
-        "noUnusedParameters": true,
         "noEmitOnError": true,
         "removeComments": true,
         "skipLibCheck": true
