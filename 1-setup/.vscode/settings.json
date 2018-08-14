@@ -1,6 +1,6 @@
 {
-  "azureFunctions.projectLanguage": "JavaScript",
-  "azureFunctions.projectRuntime": "beta",
-  "git.ignoreLimitWarning": true,
-  "azureFunctions.templateFilter": "Verified"
+    "files.exclude": {
+        "**/*.js": { "when": "$(basename).ts" },
+        "**/*.js.map": { "when": "$(basename).ts" }
+    }
 }

@@ -1,135 +1,72 @@
-# Lab 1 - Bot Framework Setup
+# 1-setup Bot
 
-In this lab, we'll setup VSCode NodeJS Bot Framework development environment.
+This bot has been created using [Microsoft Bot Framework](https://dev.botframework.com), 
 
-* Azure Function Core Tools
-*	Creating and running our first *Hello World* bot project
-* Running and debugging through VSCode and Bot Emulator
-* A quick review of the Bot Builder SDK for NodeJS
+This bot is designed to do the following:
 
-## Prerequisites
+Hello World
 
-Please install the following prerequisites.
+## About the generator
 
-* [NodeJS 8](https://nodejs.org)
-* [VSCode](https://code.visualstudio.com) - IDE. VSCode can do anything. :-)
-* [Azure Functions for Visual Studio Code](https://github.com/Microsoft/vscode-azurefunctions) - VSCode [extension](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-azurefunctions) to run the Azure functions host locally and lot of other cool features
-* [Azure Functions Pack](https://github.com/Azure/azure-functions-pack) - Package azure functions for optimization.
-* [Bot Emulator](https://emulator.botframework.com) - Emulator to test the bot.
+The goal of the BotBuilder Yeoman generator is to both scaffold out a bot according to general best practices, and to provide some templates you can use when implementing commonly requested features and dialogs in your bot. As a result, you will notice that all dialogs are located in a folder called `dialogs`, and the one you chose when running the wizard becomes the default (or root) dialog. You are free to use the additional dialogs provided (or delete them) as you see fit.
 
-To install NodeJS(8.x) - At this time, NodeJS 10 is not supported by Azure Functions
-```sh
-brew install node@8
+One thing to note is it's not possible to completely generate a bot or dialog, as the questions you need to ask of your user will vary wildly depending on your scenario. As such, we hope we've given you a good starting point for building your bots with Bot Framework.
+
+### Dialogs
+
+This generator provides the following dialogs:
+- Echo Dialog, for simple bots
+
+Each class has three properties to help simplify addition to an existing bot:
+- id: Used for the id
+- waterfall: The logic (or waterfall) for the dialog
+- name: The intent name for the dialog for triggering
+
+You can add a dialog to a bot with the following code:
+
+``` javascript
+// declare your dialog
+
+bot.dialog(dialog.id, dialog.waterfall).triggerAction({ matches: dialog.name });
 ```
 
-To install Azure Functions for Visual Studio, run the below command.
-```bash
-brew tap azure/functions
-brew install azure-functions-core-tools
-```
-
-To install Azure functions pack, run the below command
-```
-npm install -g azure-functions-pack
-```
+By using this structure, it would be possible to dynamically load all of the dialogs in the `dialogs` folder, and then add them to the bot.
 
 ## Getting Started
 
-![VSCode setup](../images/setup/vscode-project-setup.gif)
+### Dependencies
 
-1. Open Command Pallete in VSCode (Cmd + Shift + P) and search for "Azure
-Functions - Create Function project"
+- **[Restify](http://restify.com)** Used to host the web service for the bot, and for making REST calls
+- **[dotenv](https://github.com/motdotla/dotenv)** Used to manage environmental variables
 
-2. Select "Javascript" as Runtime
+### Structure
 
-3. Create "HttpTrigger" and name it as messages
+`app.ts` references the bot and starts a Restify server. `bot.ts` loads the dialog type you selected when running the generator and adds it as the default dialog. `dialogs.ts` contains the list of sample dialogs.
 
-### Install Dependencies
+### Configuring the bot
 
-* Install `botbuilder`, `botbuilder-azure` and `dotenv` dependencies.
- ```sh
- npm i botbuilder --save
- npm i botbuilder-azure --save
- npm i dotenv --save
- ```
+Update `.env` with the appropriate keys:
 
-* Copy the below snippet to setup hello world project
+- KBID and SUBSCRIPTION_KEY for QnA Maker
+- LUIS_MODEL_URL for LUIS
+- App ID and Key for registered bots.
 
-```javascript
-"use strict";
+In the case of LUIS, you will need to update the dialog in `dialogs.ts` to work with the appropriate intent and entities.
 
-require('dotenv').config();
-var builder = require("botbuilder");
-var botbuilder_azure = require("botbuilder-azure");
-var path = require('path');
+### The dialogs
 
-// For local development, appId, appPassword should be null
-var connector = new botbuilder_azure.BotServiceConnector({
-    appId: process.env['MicrosoftAppId'],
-    appPassword: process.env['MicrosoftAppPassword'],
-    openIdMetadata: process.env['BotOpenIdMetadata']
-});
+- Echo dialog is designed for simple Hello, World demos and to get you started.
 
-var bot = new builder.UniversalBot(connector, function (session, args) {
-});
+### Running the bot
 
-// Set inMemory Storage
-var inMemoryStorage = new builder.MemoryBotStorage();
-bot.set('storage', inMemoryStorage);
-bot.localePath(path.join(__dirname, './locale'));
-
-// Greetings Dialog
-bot.dialog('GreetingsDialog', [
-    function (session, results) {
-        var text = session.message.text;
-        // Count the text length and send it back
-        session.endDialog(`You sent \"${text}\" which was ${text.length} characters`);
-    }
-]);
-
-module.exports = connector.listen();
+```
+tsc
+node app.js
 ```
 
-## Start and test your bot
+## Additional Resources
 
-In visual studio code, go to debug window and launch "Attach to Javascript functions" configuration.
-
-![Debugger Configuration](../images/setup/debugger.png)
-
-> Add --port parameter in .vscode/tasks.json commands property. The default port will be in use, if you use this environment for Xamarin development;
-```json
-"command": "func host start --port 3786",
-```
-
-### Start the emulator and connect your bot
-After you start your bot, connect to your bot in the emulator:
-
-1. Type `http://localhost:3978/api/messages` into the address bar. (This is the default endpoint that your bot listens to when hosted locally.)
-2. Click **Connect**. You won't need to specify **Microsoft App ID** and **Microsoft App Password**. You can leave these fields blank for now. You'll get this information later when you register your bot.
-
-### Try out your bot
-
-Now that your bot is running locally and is connected to the emulator, try out your bot by typing a few messages in the emulator.
-You should see that the bot responds to each message you send by echoing back
-
-`You sent <message> which was <message length> characters`
-
-For eg: If you send `hello`, you might see `You sent hello which was 5 characters`
-
-![](../images/setup/setup1-demo.gif)
-
-You've successfully created your first bot using the Bot Builder SDK for Node.js!
-
-## Quick Recap
-
-Congratulations, you now have a complete VSCode development environment capable of debugging custom bot applications!
-
-Throughout the remainder of the labs, we'll be building out a bot that helps users make restaurant reservations.  Users will be able to ask our bot things like:
-
-*	Make me a reservation at a good Indian restaurant in Pittsburgh
-*	Can you book me a table tomorrow night at 7:30 for Mexican?
-
-But wait a minute, we're simply sending text-based messages to our bot.  How can we possibly parse and interpret all the variations of how users might ask for a reservation?  Thats where Natural Language processing and Machine Learning comes in.
-
-## Next Steps
-In [Lab 2](../lab2-luis) we'll build a machine learning model using Microsoft's Language Understanding Intelligence Service (known as LUIS) to give our bot some smarts.
+- [Microsoft Virtual Academy Bots Course](http://aka.ms/botcourse)
+- [Bot Framework Documentation](https://docs.botframework.com)
+- [LUIS](https://luis.ai)
+- [QnA Maker](https://qnamaker.ai)
