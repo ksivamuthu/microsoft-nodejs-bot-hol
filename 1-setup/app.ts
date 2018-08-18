@@ -1,16 +1,28 @@
+import * as restify from 'restify';
+import { MemoryBotStorage, UniversalBot, ChatConnector } from 'botbuilder';
+import { BotServiceConnector } from 'botbuilder-azure';
+
+// Load .env files as process variables
 require('dotenv').config();
 
-import * as restify from 'restify';
-import bot from './bot';
-import { BotServiceConnector } from './node_modules/botbuilder-azure';
+const useEmulator = (process.env.NODE_ENV == 'development');
 
-class App {
-    run() {
-        const server = restify.createServer();
-        server.post('/api/messages', (bot.connector('*') as BotServiceConnector ).listen());
-        server.listen(process.env.PORT, () => console.log(`${server.name} listening to ${server.url}`));
-    }
-}
+// Construct connector
+const connector =  useEmulator ? new ChatConnector() : new BotServiceConnector ({
+    appId: process.env.MICROSOFT_APP_ID,
+    appPassword: process.env.MICROSOFT_APP_PASSWORD
+});
 
-const app = new App();
-app.run();
+// Construct Bot
+const bot = new UniversalBot(connector, (session, _args) => {
+    const text = session.message.text!
+    // Count the text length and send it back
+    session.endDialog(`You sent '${text}' which was ${text.length} characters`);
+});
+
+// Set storage to Bot
+bot.set('storage', new MemoryBotStorage());
+
+const server = restify.createServer();
+server.post('/api/messages', connector.listen());
+server.listen(process.env.PORT, () => console.log(`${server.name} listening to ${server.url}`));
