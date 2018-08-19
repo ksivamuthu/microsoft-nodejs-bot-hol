@@ -154,3 +154,29 @@ Open `app.ts`. We are going to develop a simple hello world bot.
     server.post('/api/messages', connector.listen());
     server.listen(process.env.PORT, () => console.log(`${server.name} listening to ${server.url}`));
     ```
+7. In the default dialog handler of Universal bot, get the text from user and end the dialog with the message.
+    ```typescript
+    const text = session.message.text!
+    // Count the text length and send it back
+    session.endDialog(`You sent '${text}' which was ${text.length} characters`);
+    ```
+
+## Testing your Bot Application
+
+Launch the program using debug bar in VSCode. Make note of the URL in output log.
+*http://localhost:3978/api/messages*
+
+## Quick Recap
+
+Congratulations, you now have a complete VSCode development environment capable of debugging custom bot applications! Alright, I admit it, the sample bot we created isn't very exciting. But hey, you're now setup and ready to create exciting new user experiences!
+
+Throughout the remainder of the labs, we'll be building out a bot that helps users make restaurant reservations. Users will be able to ask our bot things like:
+
+* Make me a reservation at a good Indian restaurant in Tampa.
+* Can you book me a table tomorrow night at 7:30 for Mexican?
+
+But wait a minute, we're simply sending text-based messages to our bot. How can we possibly parse and interpret all the variations of how users might ask for a reservation? That my friends is where `Natural Language processing` and `Machine Learning` comes in.
+
+## Next Steps
+
+In [Lab 2](../2-luis) we'll build a machine learning model using Microsoft's Language Understanding Intelligence Service (known as LUIS) to give our bot some smarts.
