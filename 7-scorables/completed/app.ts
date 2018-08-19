@@ -12,6 +12,7 @@ import { PartySizeDialog } from "./dialogs/party-size-dialog";
 import { RestaurantDialog } from "./dialogs/restaurant-dialog";
 import { WhenDialog } from "./dialogs/when-dialog";
 import { CONSTANTS } from './constants';
+import _ = require('lodash');
 
 const useEmulator = (process.env.NODE_ENV == 'development');
 
@@ -38,6 +39,20 @@ const LuisModelUrl = 'https://' + luisAPIHostName + '/luis/v2.0/apps/' + luisApp
 // Create a recognizer that gets intents from LUIS, and add it to the bot
 const recognizer = new LuisRecognizer(LuisModelUrl);
 bot.recognizer(recognizer);
+bot.recognizer({
+    recognize: function (context, done) {
+        let err: Error | undefined;
+        let intent = { score: 0.0, intent: '' };
+        const values = ['cancel', 'nevermind', 'never mind', 'forget it', 'forgetit'];
+
+        if (context.message.text) {
+            if (_.some(values, (x) => x.toLowerCase() === context.message.text!.toLowerCase())) {
+                intent = { score: 1.0, intent: 'EndConversation' };
+            }
+        }
+        done(err!, intent);
+    }
+});
 
 bot.dialog('CreateReservation', CreateReservationDialog)
    .triggerAction({ matches: [
