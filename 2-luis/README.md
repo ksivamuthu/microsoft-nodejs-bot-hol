@@ -230,4 +230,4 @@ Remember, the more training you provide, the more accurate **intent** and **enti
 
 ## Next Steps
 
-Now that we've trained and published our LUIS app, it's time to integrate it with our chat bot in [Lab 3](../lab3-integrate-luis)!
+Now that we've trained and published our LUIS app, it's time to integrate it with our chat bot in [Lab 3](../3-integrate-luis)!
