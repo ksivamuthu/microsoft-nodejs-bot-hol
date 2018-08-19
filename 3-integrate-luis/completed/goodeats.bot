@@ -8,7 +8,7 @@
       "type": "endpoint",
       "appPassword": "",
       "endpoint": "http://localhost:3978/api/messages",
-      "name": "1-setup"
+      "name": "goodeats"
     }
   ]
 }
