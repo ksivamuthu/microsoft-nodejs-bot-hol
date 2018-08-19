@@ -1,11 +1,17 @@
+// Load .env files as process variables
+require('dotenv').config();
+
 import * as restify from 'restify';
 import { MemoryBotStorage, UniversalBot, ChatConnector, LuisRecognizer } from 'botbuilder';
 import { BotServiceConnector } from 'botbuilder-azure';
+import { ConfirmReservationDialog } from "./dialogs/confirm-reservation-dialog";
 import { CreateReservationDialog } from "./dialogs/create-reservation-dialog";
+import { CuisineDialog } from "./dialogs/cuisine-dialog";
+import { LocationDialog } from "./dialogs/location-dialog";
+import { PartySizeDialog } from "./dialogs/party-size-dialog";
+import { RestaurantDialog } from "./dialogs/restaurant-dialog";
+import { WhenDialog } from "./dialogs/when-dialog";
 import { CONSTANTS } from './constants';
-
-// Load .env files as process variables
-require('dotenv').config();
 
 const useEmulator = (process.env.NODE_ENV == 'development');
 
@@ -35,6 +41,12 @@ bot.recognizer(recognizer);
 
 bot.dialog('CreateReservationDialog', CreateReservationDialog)
    .triggerAction({ matches: CONSTANTS.intents.CREATE_RESERVATION });
+bot.dialog('LocationDialog', LocationDialog);
+bot.dialog('CuisineDialog', CuisineDialog);
+bot.dialog('RestaurantDialog', RestaurantDialog);
+bot.dialog('WhenDialog', WhenDialog);
+bot.dialog('PartySizeDialog', PartySizeDialog);
+bot.dialog('ConfirmReservationDialog', ConfirmReservationDialog);
 
 // Create restify server
 const server = restify.createServer();
