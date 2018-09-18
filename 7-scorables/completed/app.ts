@@ -46,7 +46,7 @@ bot.recognizer({
         const values = ['cancel', 'nevermind', 'never mind', 'forget it', 'forgetit'];
 
         if (context.message.text) {
-            if (_.some(values, (x) => x.toLowerCase() === context.message.text!.toLowerCase())) {
+            if (values[context.message.text!.toLowerCase()]) {
                 intent = { score: 1.0, intent: 'EndConversation' };
             }
         }
