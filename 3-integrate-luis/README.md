@@ -1,6 +1,6 @@
 # Lab 3 - Integrate LUIS
 
-In this lab, we are going to integrate the sample bot created in [Lab 1 - Setup](../lab1-setup) with the LUIS model trained in [Lab2 - LUIS](../lab2-luis).
+In this lab, we are going to integrate the sample bot created in [Lab 1 - Setup](../1-setup) with the LUIS model trained in [Lab2 - LUIS](../2-luis).
 
 ## Prerequisites
 
@@ -99,4 +99,4 @@ In this lab, we successfully connected our bot to our LUIS application, and conf
 
 ## Next Steps
 
-At this point in the labs we were able to configure our RootDialog to handle multiple user intents, but we're yet to do anything useful with the provided information. In subsequent labs, we'll create a more sophisticated conversational flow with multiple dialogs. However, before doing so I thought it would be a good idea to become familiar with some basic NodeJS Bot Builder concepts. In [Lab 4](../lab4-bot-builder) we'll focus on learning these concepts before moving back to enhance our bot!
+At this point in the labs we were able to configure our RootDialog to handle multiple user intents, but we're yet to do anything useful with the provided information. In subsequent labs, we'll create a more sophisticated conversational flow with multiple dialogs. However, before doing so I thought it would be a good idea to become familiar with some basic NodeJS Bot Builder concepts. In [Lab 4](../4-bot-builder) we'll focus on learning these concepts before moving back to enhance our bot!
