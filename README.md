@@ -1,8 +1,8 @@
 # Microsoft NodeJS Bot Framework Hands On Labs
 
-Hello everyone !!! This is series of hands-on-labs as end-to-end guide to building conversational experience using the Microsoft NodeJS Bot framework.
+> Humans are great at conversations. We read between lines. We understand sarcasm. We constantly leverages contextual information when we respond to someone else. Can chatbot do the same, interact with human and as human?
 
-If you want to checkout .NET Bot framework Hands on lab of the same demo, please refer [Geoff Tewskbury's github repository](https://github.com/gtewksbury/Microsoft-Bot-Framework-HOL).
+Hello everyone !!! This is series of hands-on-labs as end-to-end guide to building conversational experience using the Microsoft NodeJS Bot framework.
 
 ![Screenshot](images/bot-slack.png)
 
@@ -16,7 +16,7 @@ If you want to checkout .NET Bot framework Hands on lab of the same demo, please
 
 [Lab 4 - Bot Builder](4-bot-builder) provides a conceptual overview of the NodeJS Bot Framework and some of the critical components you'll want to become familiar with.
 
-[Lab 5 - Dialogs](5-dialogs) Introduces and implements some general **Dialog** design patterns
+[Lab 5 - Dialogs](5-dialogs) Introduces and implements general **Dialog** design patterns
 
 [Lab 6 - LUIS all the way down](6-luis-all-the-way-down) implements design patterns for integrating our LUIS model throughout the entire life cycle of a conversation.
 
@@ -24,10 +24,6 @@ If you want to checkout .NET Bot framework Hands on lab of the same demo, please
 addressing common commands throughout your bot application.
 
 [Lab 8 - Azure Bot Service](8-azure-bot-services) walks through the process of deploying and hosting your bot logic within a reliable and durable Azure environment.
-
-## Credits
-
-- [Geoff Tewksbury](https://github.com/gtewksbury)
 
 ## Reference
 
