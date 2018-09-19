@@ -1,8 +1,17 @@
-# Lab 3 - Integrate LUIS
+# Lab 3 - Integrate LUIS & State Management
 
-In this lab, we are going to integrate the sample bot created in [Lab 1 - Setup](../1-setup) with the LUIS model trained in [Lab2 - LUIS](../2-luis).
+Congratulations on making it this far! At this point you should have setup your .NET Bot Framework development environment [Lab 1](../1-setup) and have created, trained, and published your LUIS application [Lab 2](../2-luis).  Moving forward, we're going to be spending most of our time in Visual studio Code, so hopefully you're ready to get your hands dirty with some coding!
 
-## Prerequisites
+## Starter 
+
+This lab includes the starter project, which is similar the project we completed in [Lab 1](../1-setup).
+
+New files:
+
+* [Reservation.ts](../3-integrate-luis/start/models/reservation.ts) - It contains a Reservation.ts class file which contains some properties which define a reservation.
+* [constants.ts](../3-integrate-luis/start/constants.ts) - It contains, the intents and entity keys required to create the reservation bot.
+
+## Get LUIS Model ID & Subscription Key.
 
 Get the LUIS Model ID and subscription key from [LUIS website](https://luis.ai).
 
@@ -10,9 +19,11 @@ Get the LUIS Model ID and subscription key from [LUIS website](https://luis.ai).
 https://westus.api.cognitive.microsoft.com/luis/v2.0/apps/<MODEL_ID>?subscription-key=<SUBSCRIPTION_KEY> &verbose=true&timezoneOffset=0&q=
 ```
 
-## How to integrate LUIS?
+## Integrate LUIS recognizer to bot
 
-``` javascript
+Add the LUIS integration into your bot in app.ts. Add the *LuisAppId* and *LuisAPIKey* you retrieved from your LUIS model values in *.env* file. These values will be loaded into your process environment variables, when `require('dotenv').config()` calls.
+
+``` typescript
 // Add LUIS
 const luisAppId = process.env.LuisAppId;
 const luisAPIKey = process.env.LuisAPIKey;
