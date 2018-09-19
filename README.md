@@ -2,7 +2,7 @@
 
 Hello everyone !!! This is series of hands-on-labs as end-to-end guide to building conversational experience using the Microsoft NodeJS Bot framework.
 
-First of all, my sincere thanks and credits goes to Geoff Tewskbury for the detailed hands on labs. If you want to checkout .NET Bot framework Hands on lab of the same demo, please refer [Geoff Tewskbury's github repository](https://github.com/gtewksbury/Microsoft-Bot-Framework-HOL).
+If you want to checkout .NET Bot framework Hands on lab of the same demo, please refer [Geoff Tewskbury's github repository](https://github.com/gtewksbury/Microsoft-Bot-Framework-HOL).
 
 ![Screenshot](images/bot-slack.png)
 
@@ -18,7 +18,7 @@ First of all, my sincere thanks and credits goes to Geoff Tewskbury for the deta
 
 [Lab 5 - Dialogs](5-dialogs) Introduces and implements some general **Dialog** design patterns
 
-[Lab 6 - LUIS all the way down](6-luis-alltheway-down) implements design patterns for integrating our LUIS model throughout the entire life cycle of a conversation.
+[Lab 6 - LUIS all the way down](6-luis-all-the-way-down) implements design patterns for integrating our LUIS model throughout the entire life cycle of a conversation.
 
 [Lab 7 - Custom Recognizers/Scorables](7-scorables) demonstrates global message handlers for
 addressing common commands throughout your bot application.

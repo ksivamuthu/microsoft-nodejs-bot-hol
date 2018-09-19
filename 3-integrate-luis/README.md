@@ -13,63 +13,59 @@ https://westus.api.cognitive.microsoft.com/luis/v2.0/apps/<MODEL_ID>?subscriptio
 ## How to integrate LUIS?
 
 ``` javascript
-
 // Add LUIS
-var luisAppId = process.env.LuisAppId;
-var luisAPIKey = process.env.LuisAPIKey;
-var luisAPIHostName = process.env.LuisAPIHostName || 'westus.api.cognitive.microsoft.com';
+const luisAppId = process.env.LuisAppId;
+const luisAPIKey = process.env.LuisAPIKey;
+const luisAPIHostName = process.env.LuisAPIHostName || 'westus.api.cognitive.microsoft.com';
 
 const LuisModelUrl = 'https://' + luisAPIHostName + '/luis/v2.0/apps/' + luisAppId + '?subscription-key=' + luisAPIKey;
 
 // Create a recognizer that gets intents from LUIS, and add it to the bot
-var recognizer = new builder.LuisRecognizer(LuisModelUrl);
+const recognizer = new LuisRecognizer(LuisModelUrl);
 bot.recognizer(recognizer);
-
 ```
 
 ## Add Intent to handle LUIS recognition result
 
 Create a dialog with triggerAction that matches the LUIS intent
 
-```javascript
+```js
 
-bot.dialog('CreateReservationDialog',
-    ...
-).triggerAction({
-    matches: 'Create Reservation'
-});
+bot.dialog('CreateReservationDialog', CreateReservationDialog)
+   .triggerAction({ matches: CONSTANTS.intents.CREATE_RESERVATION });
 
 ```
 
 ## Retrieve entity from the intent result
 
 ```js
-bot.dialog('CreateReservationDialog',
-    [(session, args, next) => {
-        var intent = args.intent;
-        var locationKey = 'RestaurantReservation.Address';
-        var cuisineKey = 'RestaurantReservation.Cuisine';
-        var whenKey = 'builtin.datetimeV2.datetime';
-        var partySizeKey = 'builtin.number';
+import { WaterfallDialog, IEntity, EntityRecognizer } from "botbuilder";
+import { Reservation } from "../model/reservation";
+import { CONSTANTS } from "../constants";
 
-        var location = builder.EntityRecognizer.findEntity(intent.entities, locationKey);
-        var cuisine = builder.EntityRecognizer.findEntity(intent.entities, cuisineKey);
-        var when = builder.EntityRecognizer.findEntity(intent.entities, whenKey);
-        var partySize = builder.EntityRecognizer.findEntity(intent.entities, partySizeKey);
+const dialog = new WaterfallDialog([
+    (session, args, next) => {
+        const reservation: Reservation = new Reservation();
+        session.privateConversationData.reservation = reservation;
 
-        // Save it in the private conversation data.
-        session.privateConversationData.reservation = {
-            location: location ? location.entity : null,
-            cuisine: cuisine ? cuisine.entity : null,
-            when: when ? when.entity : null,
-            partySize: partySize ? partySize.entity : null
-        };
+        const entities: IEntity[] = args.intent.entities;
 
-        next();
-    },
-    (session, results, next) => {
-        var reservation = session.privateConversationData.reservation;
-        if (reservation != null) {
+        const location = EntityRecognizer.findEntity(entities, CONSTANTS.entity.locationKey);
+        const cuisine = EntityRecognizer.findEntity(entities, CONSTANTS.entity.cuisineKey);
+        const when = EntityRecognizer.findEntity(entities, CONSTANTS.entity.timeKey);
+        const partySize = EntityRecognizer.findEntity(entities, CONSTANTS.entity.partySizeKey);
+
+        reservation.location = location ? location.entity : null;
+        reservation.cuisine = cuisine ? cuisine.entity : null;
+        reservation.when = when ? when.entity : null;
+        reservation.partySize = partySize ? partySize.entity : null;
+        
+        session.send('Looks like your attempting to create a reservation.  Let\'s see what information we were able to pull');
+
+        if(next) next();
+    }, (session, _args, _next) => {
+        const reservation: Reservation = session.privateConversationData.reservation;
+        if(reservation != null) {
             if (reservation.location) {
                 session.send(`Location Preference: ${reservation.location}`);
             }
@@ -86,12 +82,12 @@ bot.dialog('CreateReservationDialog',
                 session.send(`Party Size Preference: ${reservation.partySize}`);
             }
         }
-        next();
-    }]
-).triggerAction({
-    matches: 'Create Reservation'
-});
 
+        session.endConversation();
+    }
+]);
+
+export { dialog as CreateReservationDialog }
 ```
 
 ## Demo
