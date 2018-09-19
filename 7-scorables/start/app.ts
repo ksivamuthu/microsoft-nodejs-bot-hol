@@ -2,7 +2,7 @@
 require('dotenv').config();
 
 import * as restify from 'restify';
-import { MemoryBotStorage, UniversalBot, ChatConnector, LuisRecognizer } from 'botbuilder';
+import { MemoryBotStorage, UniversalBot, ChatConnector, LuisRecognizer, Prompts, PromptType, PromptAttachment, PromptChoice, PromptConfirm, PromptNumber, PromptText, PromptTime, Session } from 'botbuilder';
 import { BotServiceConnector } from 'botbuilder-azure';
 import { ConfirmReservationDialog } from "./dialogs/confirm-reservation-dialog";
 import { CreateReservationDialog } from "./dialogs/create-reservation-dialog";
@@ -38,6 +38,25 @@ const LuisModelUrl = 'https://' + luisAPIHostName + '/luis/v2.0/apps/' + luisApp
 // Create a recognizer that gets intents from LUIS, and add it to the bot
 const recognizer = new LuisRecognizer(LuisModelUrl);
 bot.recognizer(recognizer);
+
+const dialogMatches = [
+    CONSTANTS.intents.CREATE_RESERVATION, CONSTANTS.intents.SET_RESERVATION_CUISINE,
+    CONSTANTS.intents.SET_RESERVATION_DATE, CONSTANTS.intents.SET_RESERVATION_LOCATION,
+    CONSTANTS.intents.SET_RESERVATION_PARTY_SIZE
+];
+
+const luisPromptHandler = (session:Session, args:any) => {
+    session.cancelDialog(0);
+    session.beginDialog('CreateReservation', { intent: args });
+};
+
+// Customize Prompts
+Prompts.customize(PromptType.attachment, new PromptAttachment().recognizer(recognizer).matchesAny(dialogMatches, luisPromptHandler));
+Prompts.customize(PromptType.choice, new PromptChoice().recognizer(recognizer).matchesAny(dialogMatches, luisPromptHandler));
+Prompts.customize(PromptType.confirm, new PromptConfirm().recognizer(recognizer).matchesAny(dialogMatches, luisPromptHandler));
+Prompts.customize(PromptType.number, new PromptNumber().recognizer(recognizer).matchesAny(dialogMatches, luisPromptHandler));
+Prompts.customize(PromptType.text, new PromptText().recognizer(recognizer).matchesAny(dialogMatches, luisPromptHandler));
+Prompts.customize(PromptType.time, new PromptTime().recognizer(recognizer).matchesAny(dialogMatches, luisPromptHandler));
 
 bot.dialog('CreateReservation', CreateReservationDialog)
    .triggerAction({ matches: [

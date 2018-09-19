@@ -2,16 +2,15 @@ import { Prompts, WaterfallDialog } from "botbuilder";
 import { Reservation } from "../model/reservation";
 
 const dialog = new WaterfallDialog([
-    (session, _args, next) => {
+    (session, _args) => {
         const reservation: Reservation = session.privateConversationData.reservation;
         if (reservation.location) { 
             session.endDialogWithResult({response: reservation.location});
             return;
         }
-        
         Prompts.text(session, 'LOCATION_REQUEST');
     },
-    async (session, results, _next) => {
+    (session, results, _next) => {
         // Get location
         const location = results.response;
         if (location) {
