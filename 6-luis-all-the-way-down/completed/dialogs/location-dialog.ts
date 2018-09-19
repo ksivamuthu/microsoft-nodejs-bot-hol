@@ -1,8 +1,8 @@
-import { Prompts, WaterfallDialog, PromptType, PromptText } from "botbuilder";
+import { Prompts, WaterfallDialog } from "botbuilder";
 import { Reservation } from "../model/reservation";
 
 const dialog = new WaterfallDialog([
-    (session, _args, next) => {
+    (session, _args) => {
         const reservation: Reservation = session.privateConversationData.reservation;
         if (reservation.location) { 
             session.endDialogWithResult({response: reservation.location});
