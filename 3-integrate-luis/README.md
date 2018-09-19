@@ -8,7 +8,7 @@ This lab includes the starter project, which is similar the project we completed
 
 New files:
 
-* [Reservation.ts](../3-integrate-luis/start/models/reservation.ts) - It contains a Reservation.ts class file which contains some properties which define a reservation.
+* [Reservation.ts](../3-integrate-luis/start/model/reservation.ts) - It contains a Reservation.ts class file which contains some properties which define a reservation.
 * [constants.ts](../3-integrate-luis/start/constants.ts) - It contains, the intents and entity keys required to create the reservation bot.
 
 ## Get LUIS Model ID & Subscription Key.
