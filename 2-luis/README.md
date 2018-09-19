@@ -88,7 +88,7 @@ We're now ready to start training our app!  Let's navigate back to our *Create R
 Enter the following **utterance** into your *Create Reservation* **intent** and click *Enter*
 
 
-> Make me a reservation in Pittsburgh tomorrow night at 7:30 at a thai restaurant
+> **Make me a reservation in Pittsburgh tomorrow night at 7:30 at a thai restaurant**
 
 
 ![Create LUIS Intent](images/luis-utterance-1.png)
