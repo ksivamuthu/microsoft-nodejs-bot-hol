@@ -4,20 +4,30 @@ import { CONSTANTS } from "../constants";
 
 const dialog = new WaterfallDialog([
     (session, args, next) => {
-        const reservation: Reservation = new Reservation();
+        const reservation: Reservation = session.privateConversationData.reservation || new Reservation();
         session.privateConversationData.reservation = reservation;
 
         const entities: IEntity[] = args.intent.entities;
 
-        const location = EntityRecognizer.findEntity(entities, CONSTANTS.entity.locationKey);
-        const cuisine = EntityRecognizer.findEntity(entities, CONSTANTS.entity.cuisineKey);
-        const when = EntityRecognizer.findEntity(entities, CONSTANTS.entity.timeKey);
-        const partySize = EntityRecognizer.findEntity(entities, CONSTANTS.entity.partySizeKey);
+        const location = EntityRecognizer.findEntity(entities, CONSTANTS.entity.locationKey); 
+        if(location) {
+            reservation.location= location.entity;
+        }
 
-        reservation.location = location ? location.entity : null;
-        reservation.cuisine = cuisine ? cuisine.entity : null;
-        reservation.when = when ? when.entity : null;
-        reservation.partySize = partySize ? partySize.entity : null;
+        const cuisine = EntityRecognizer.findEntity(entities, CONSTANTS.entity.cuisineKey);
+        if(cuisine) {
+            reservation.cuisine = cuisine.entity;
+        }
+
+        const when = EntityRecognizer.findEntity(entities, CONSTANTS.entity.datetimeKey);
+        if(when) {
+            reservation.when = when.entity;
+        }
+
+        const partySize = EntityRecognizer.findEntity(entities, CONSTANTS.entity.partySizeKey);
+        if(partySize) {
+            reservation.partySize = partySize.entity;
+        }
         
         session.send('Looks like your attempting to create a reservation.  Let\'s see what information we were able to pull');
 
@@ -42,7 +52,7 @@ const dialog = new WaterfallDialog([
             }
         }
 
-        session.endConversation();
+        session.endDialog();
     }
 ]);
 
