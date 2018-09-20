@@ -1,4 +1,4 @@
-# Lab 4 - Bot Builder (TBD)
+# Lab 4 - Bot Builder
 
 Dialogs in the Bot Builder SDK for Node.js allow you to model conversations and manage conversation flow. A bot communicates with a user via conversations. Conversations are organized into dialogs. Dialogs can contain waterfall steps, and prompts. As the user interacts with the bot, the bot will start, stop, and switch between various dialogs in response to user messages. Understanding how dialogs work is key to successfully designing and creating great bots.
 
