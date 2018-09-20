@@ -3,7 +3,6 @@
 Dialogs in the Bot Builder SDK for Node.js allow you to model conversations and manage conversation flow. A bot communicates with a user via conversations. Conversations are organized into dialogs. Dialogs can contain waterfall steps, and prompts. As the user interacts with the bot, the bot will start, stop, and switch between various dialogs in response to user messages. Understanding how dialogs work is key to successfully designing and creating great bots.
 
 ## Conversations through dialogs
-## Conversations through dialogs
 
 Bot Builder SDK for Node.js defines a conversation as the communication between a bot and a user through one or more dialogs. A dialog, at its most basic level, is a reusable module that performs an operation or collects information from a user. You can encapsulate the complex logic of your bot in reusable dialog code.
 
