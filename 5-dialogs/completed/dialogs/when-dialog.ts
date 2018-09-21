@@ -22,9 +22,11 @@ const dialog = new WaterfallDialog([
             reservation.when = whenTime;
 
             session.send('WHEN_CONFIRMATION', reservation.restaurant!.name, moment(whenTime).format('LLLL'));
-        }
-        
-        session.endDialogWithResult({ response: whenTime });
+            session.endDialogWithResult({ response: whenTime });
+        } else {
+            session.send('WHEN_UNRECOGNIZED');
+            session.replaceDialog('WhenDialog');
+        }                
     }
 ]);
 

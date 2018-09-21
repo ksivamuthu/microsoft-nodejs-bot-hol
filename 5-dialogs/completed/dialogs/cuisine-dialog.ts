@@ -3,7 +3,6 @@ import * as _ from "lodash";
 import { Reservation } from "../model/reservation";
 import { RestaurantService } from "../service/restaurant-service";
 
-const restaurantService = new RestaurantService();
 const dialog = new WaterfallDialog([
     async (session, _args, next) => {
         const reservation: Reservation = session.privateConversationData.reservation;
@@ -13,7 +12,7 @@ const dialog = new WaterfallDialog([
         }
 
         // Ask cuisines
-        const cuisines = await restaurantService.getCuisines(reservation.location!);
+        const cuisines = await RestaurantService.getCuisines(reservation.location!);
         const cardActions = _.map(cuisines, (x) => {
             return CardAction.imBack(session, x.name, `${x.name} (${x.count})`);
         });
@@ -30,13 +29,17 @@ const dialog = new WaterfallDialog([
     async (session, results, _next) => {
         // Get cuisine
         const cuisine = results.response;
-        if (cuisine) {
-            const reservation: Reservation = session.privateConversationData.reservation;
+        const reservation: Reservation = session.privateConversationData.reservation;
+
+        if (RestaurantService.hasRestaurantsWithCuisine(reservation.location!, cuisine)) {
             reservation.cuisine = cuisine.entity;
 
             session.send('CUISINE_CONFIRMATION');
+            session.endDialogWithResult({ response: cuisine });            
+        } else {
+            session.send('CUISINE_UNRECOGNIZED', cuisine);
+            session.replaceDialog('CuisineDialog');
         }
-        session.endDialogWithResult({ response: cuisine });
     }
 ]);
 

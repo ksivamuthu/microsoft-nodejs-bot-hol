@@ -30,24 +30,22 @@ Houses the logic for querying and returning restaurants based on location and cu
 This directory contains Cuisine, Reservation, Restaurant, and RestaurantSearchResults classes. These classes house the data we retrieve from the RestaurantService
 
 ## Prerequisites
-
-## Prerequisites
-There's a quick prerequisite we need to take care of before getting started.  Go ahead an open the *start* solution with Visual Studio and complete the following steps:
+There's a quick prerequisite we need to take care of before getting started.  Go ahead an open the *start* directory with Visual Studio code and complete the following steps:
 
 #### Eat Street API Key
 The code in the *RestaurantServices* uses the publicly available  [EatStreet REST API](https://www.programmableweb.com/api/eatstreet) to query for restaurants.  Why did I chose this API?  Because it's free and getting access is a breeze.  That being said, you do have to register for an account to receive an access key.  Here are the steps:
 
 1.	Navigate to the [Eat Street sign-in page](https://developers.eatstreet.com/sign-in) and create a new account
 	
-	![Create Eat Street Account](images/create-eat-street-account.png)
+	![Create Eat Street Account](../images/dialogs/create-eat-street-account.png)
 
 2.	Once registered, you should immediately be taken to a page which allows you to generate an access key.  Click *Request new API Key* and copy the provided key
 
-	![Generate API Key](images/eat-street-registered.png)
+	![Generate API Key](../images/dialogs/eat-street-registered.png)
 
-3.	Open the *.env* and copy the key to the *EastStreetApiKey* value 
+3.	Open the *.env* and copy the key to the *EAT_STREET_API_KEY* value 
 
-	![Update .env](images/env-config.png)
+	![Update .env](../images/dialogs/env.png)
 
 ## Reservation Conversation Logic
 Alright, we're ready to get going!  Below you'll find a high-level blueprint of the reservation conversational flow your going to be creating.  Hopefully you'll notice a pattern forming. 

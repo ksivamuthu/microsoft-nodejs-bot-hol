@@ -27,6 +27,9 @@ const dialog = new WaterfallDialog([
         if (results.response.entity === 'Reserve') {
             // Ask confirmation
             session.endDialogWithResult({ response: 'confirmed' });
+        } else {
+            session.send('CONFIRMATION_UNRECOGNIZED');
+            session.replaceDialog('ConfirmReservationDialog');
         }
     }
 ]);

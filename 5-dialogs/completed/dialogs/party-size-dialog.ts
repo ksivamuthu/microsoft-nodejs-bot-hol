@@ -21,8 +21,11 @@ const dialog = new WaterfallDialog([
             reservation.partySize = parseInt(partySize);
 
             session.send('CONFIRMATION');
+            session.endDialogWithResult({ response: partySize });
+        } else {
+            session.send('PARTY_UNRECOGNIZED');
+            session.replaceDialog('PartySizeDialog');
         }
-        session.endDialogWithResult({ response: partySize });
     }
 ]);
 
