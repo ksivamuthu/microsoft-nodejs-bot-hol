@@ -21,7 +21,11 @@ const dialog = new WaterfallDialog([
             .text('RESERVATION_CONFIRMATION')
             .attachments([card.toAttachment()]);
 
-        Prompts.choice(session, msg, 'Reserve');
+        const retryPrompt = new Message(session)
+            .text('CONFIRMATION_UNRECOGNIZED')
+            .attachments([card.toAttachment()]);
+
+        Prompts.choice(session, msg, 'Reserve', { retryPrompt });
     },
     async (session, results, _next) => {
         if (results.response.entity === 'Reserve') {
