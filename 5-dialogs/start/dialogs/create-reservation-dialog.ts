@@ -1,7 +1,8 @@
-import { WaterfallDialog, IEntity, EntityRecognizer } from "botbuilder";
-import { Reservation } from "../model/reservation";
-import { CONSTANTS } from "../constants";
 import * as Recognizers from "@microsoft/recognizers-text-suite";
+import { EntityRecognizer, IEntity, WaterfallDialog } from "botbuilder";
+import * as moment from "moment";
+import { CONSTANTS } from "../constants";
+import { Reservation } from "../model/reservation";
 
 const findLocation = (entities: IEntity[]): string => {
     const locationEntity = EntityRecognizer.findEntity(entities, CONSTANTS.entity.locationKey);
@@ -16,11 +17,10 @@ const findCuisine = (entities: IEntity[]): string => {
 const findPartySize = (entities: IEntity[]): number | undefined => {
     const partySizeEntity = EntityRecognizer.findEntity(entities, CONSTANTS.entity.partySizeKey);
     const size = partySizeEntity ? partySizeEntity.entity : null;
-    // tslint:disable-next-line:radix
     if(size) {
         const results = Recognizers.recognizeNumber(size, Recognizers.Culture.English);
         if(results && results[0]) {
-            return parseInt(results[0].resolution.value);
+            return parseInt(results[0].resolution.value, 10);
         }
     }
     return;
@@ -42,15 +42,30 @@ const dialog = new WaterfallDialog([
         session.privateConversationData.reservation = reservation;
 
         const entities: IEntity[] = args.intent.entities;
-        
-        reservation.location = findLocation(entities);
-        reservation.cuisine =  findCuisine(entities);
-        reservation.when = findWhen(entities);
-        reservation.partySize = findPartySize(entities);
+
+        const location = findLocation(entities);
+        if(location) {
+            reservation.location= location;
+        }
+
+        const cuisine = findCuisine(entities);
+        if(cuisine) {
+            reservation.cuisine = cuisine;
+        }
+
+        const when = findWhen(entities);
+        if(when) {
+            reservation.when = when;
+        }
+
+        const partySize = findPartySize(entities);
+        if(partySize) {
+            reservation.partySize = partySize;
+        }
         
         session.send('Looks like your attempting to create a reservation.  Let\'s see what information we were able to pull');
 
-        if(next) next();
+        if(next) next(); 
     }, (session, _args, _next) => {
         const reservation: Reservation = session.privateConversationData.reservation;
         if(reservation != null) {
@@ -63,7 +78,7 @@ const dialog = new WaterfallDialog([
             }
 
             if (reservation.when) {
-                session.send(`Date Preference: ${reservation.when}`);
+                session.send(`Date Preference: ${moment(reservation.when).format('LLLL')}`);
             }
 
             if (reservation.partySize) {
