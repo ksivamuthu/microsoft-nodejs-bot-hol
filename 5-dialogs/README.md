@@ -52,48 +52,420 @@ Alright, we're ready to get going!  Below you'll find a high-level blueprint of 
 
 
 * **CreateReservationDialog**
-    * Gather the state provided by the user's initial request and *Call* the *LocationDialog*
+    * Gather the state provided by the user's initial request and *Call* the *LocationDialog* and start other dialogs in waterfall steps. Once the reservation is confirmed, end the conversation
+
 * **LocationDialog**     
     * *Start*
         * IF the location was NOT retrieved from the original request, ask the user for their preferred location and *Wait* for their response
-        * OTHERWISE, *Call* the *CuisineDialog*
+        * OTHERWISE, `endDialog` with result.
     * *Handler*
-        * IF the user-provided location is valid, save to state and *Call* the *CuisineDialog*
-        * OTHERWISE, notify the user that the location was not found, ask for another location, and *Wait* for their response
+        * IF the user-provided location is valid, save to state and `endDialog` with result.
+        * OTHERWISE, notify the user that the location was not found, reprompt/restart location dialog
+
 * **CuisineDialog**     
     * *Start*
-        * IF the cuisine was NOT retrieved from the original request, ask the user for their preferred cuisine and *Wait* for their response
-        * OTHERWISE, *Call* the *RestaurantDialog*
+        * IF the cuisine was NOT retrieved from the original request, ask the user for their preferred cuisine and *Wait* for their response.
+        * Add `retryPrompt` parameter to reprompt, if the user entered option is invalid.
+        * OTHERWISE, `endDialog` with result.
     * *Handler*
-        * IF the user-provided cusine is valid, save to state and *Call* the *RestaurantDialog*
-        * OTHERWISE, notify the user that the cuisine was not found, ask for another cuisine, and *Wait* for their response  
+        * IF the user-provided cuisine is valid, save to state and `endDialog` with result.
+
 * **RestaurantDialog**     
     * *Start*
         * Ask the user for their preferred restaurant and *Wait* for their response
+        * Add `retryPrompt` parameter to reprompt, if the user entered option is invalid.
     * *Handler*
-        * IF the user-provided restaurant is valid, save to state and *Call* the *WhenDialog*
-        * OTHERWISE, notify the user that the restaurant was not found, ask for another restaurant, and *Wait* for their response            
+        * IF the user-provided restaurant is valid, save to state and `endDialog` with result.
+
 * **WhenDialog**     
     * *Start*
         * IF the reservation date / time was NOT retrieved from the original request, ask the user for their preferred time and *Wait* for their response
-        * OTHERWISE, *Call* the *PartySizeDialog*
+        * OTHERWISE, `endDialog` with result.
     * *Handler*
-        * IF the user-provided date / time is valid, save to state and *Call* the *PartySizeDialog*
-        * OTHERWISE, notify the user that the provided date / time is invalid, ask for a date / time, and *Wait* for their response  
+        * IF the user-provided date / time is valid, save to state and `endDialog` with result.        
+
 * **PartySizeDialog**     
     * *Start*
         * IF the party size was NOT retrieved from the original request, ask the user for their preferred number of people and *Wait* for their response
-        * OTHERWISE, *Call* the *ConfirmReservationDialog* with a registered *Done* handler
+        * OTHERWISE, `endDialog` with result.
     * *Handler*
-        * IF the user-provided party size is valid, save to state and *Call* the *ConfirmReservationDialog* with a registered *Done* handler
-        * OTHERWISE, notify the user that the provided party size is invalid, ask for the party size, and *Wait* for their response  
-
+        * IF the user-provided party size is valid, save to state nd `endDialog` with result.     
 * **ConfirmReservationDialog**     
     * *Start*
         * Ask the user to confirm the reservation and *Wait* for their response
     * *Handler*
-        * IF the user-provided a valid confirmation, save to state and call *Done*
-        * OTHERWISE, ask the user to confirm their reservation and *Wait* for their response  
+        * IF the user-provided a valid confirmation, save to state and `endDialog` with result.            
+
+## Dialogs
+
+Let's update our code to match this logic.
+
+### Create Reservation Dialog
+
+Update the create reservation dialog. The create reservation dialog implements the waterfall steps and start dialogs in steps to control the conversation flow.
+
+```typescript
+const dialog = new WaterfallDialog([
+    (session, args, _next) => {
+        const reservation: Reservation = session.privateConversationData.reservation || new Reservation();
+        session.privateConversationData.reservation = reservation;
+
+        // let intent: IIntent = args.intent.intent;
+        const entities: IEntity[] = args.intent.entities;
+
+        reservation.location = findLocation(entities);
+        reservation.cuisine = findCuisine(entities);
+        reservation.when = findWhen(entities);
+        reservation.partySize = findPartySize(entities);
+
+        session.send('GREETINGS');
+        session.beginDialog('LocationDialog');
+    },
+    (session, _results, _next) => {
+        session.beginDialog('CuisineDialog');
+    },
+    (session, _results, _next) => {
+        session.beginDialog('RestaurantDialog');
+    },
+    (session, _results, _next) => {
+        session.beginDialog('WhenDialog');
+    },
+    (session, _results, _next) => {
+        session.beginDialog('PartySizeDialog');
+    },
+    (session, _results, _next) => {
+        session.beginDialog('ConfirmReservationDialog');
+    },
+    (session, _results, _next) => {
+        const reservation: Reservation = session.privateConversationData.reservation;
+        // Ask confirmation
+        session.send('BOOKED_CONFIRMATION', reservation.restaurant!.name, moment(reservation.when).format('ll'), moment(reservation.when).format('LT'));
+        session.endConversation();
+    }
+]);
+```
+
+### Location Dialog
+
+Create `location-dialog.ts` in dialogs directory.  
+
+In this location dialog, 
+
+    * Check whether reservation location is available
+    * If there is reservation location, end this dialog with result
+    * Otherwise, prompts the user
+    * Once user enters the response, check whether any restaurants are available in the location.
+    * If the restaurants are available in location, save the location in state data.
+    * Otherwise, call replaceDialog (or restart the location dialog) with args `{unrecognized: true}`
+    * If `unrecognized` flag is present in args, change the prompt text with unrecognized message.
+
+> We are replacing the location dialog because the prompt is text. The text prompt recognizer will accept any text as plain text. In case of other dialog prompts, we are passing `retryPrompt`. If prompt is not recognized valid user response, the prompt will do reprompt again with different message. Take a look at other dialogs. You will see the difference.
+
+```typescript
+import { Prompts, WaterfallDialog } from "botbuilder";
+import { Reservation } from "../model/reservation";
+import { RestaurantService } from "../service/restaurant-service";
+
+const dialog = new WaterfallDialog([
+    (session, args, _next) => {
+        const reservation: Reservation = session.privateConversationData.reservation;
+        if (reservation.location) { 
+            session.endDialogWithResult({response: reservation.location});
+            return;
+        }
+
+        // If location dialog args is unrecognized, change the message.
+        if(args && args.unrecognized) {
+            Prompts.text(session, 'LOCATION_UNRECOGNIZED');
+        } else {                    
+            Prompts.text(session, 'LOCATION_REQUEST');
+        }
+    },
+    async (session, results, _next) => {
+        // Get location
+        const location = results.response;
+        const reservation: Reservation = session.privateConversationData.reservation;
+            
+        if (await RestaurantService.hasRestaurants(location)) {
+            reservation.location = location;
+            session.send('LOCATION_CONFIRMATION', location);
+            session.endDialogWithResult({ response: location });
+        } else {
+            session.replaceDialog('LocationDialog', { unrecognized: true });
+        }        
+    }
+]);
+
+export { dialog as LocationDialog }
+```
+
+### Cuisine Dialog
+
+Create `cuisine-dialog.ts` in dialogs directory.  
+
+In this cuisine dialog, 
+
+    * Check whether reservation cuisine is available
+    * If there is reservation cuisine, end this dialog with result
+    * Otherwise, prompts the user with cuisine available in the location and with retryPrompt (with unrecognized cuisine value as text)
+    * Once user enters the response, check whether any restaurants are available in the location and cuisine.
+    * If the restaurants are available in location, save the cuisine in state data.
+
+```typescript
+import { CardAction, Message, Prompts, SuggestedActions, WaterfallDialog } from "botbuilder";
+import * as _ from "lodash";
+import { Reservation } from "../model/reservation";
+import { RestaurantService } from "../service/restaurant-service";
+
+const dialog = new WaterfallDialog([
+    async (session, args, next) => {
+        const reservation: Reservation = session.privateConversationData.reservation;
+        if (reservation.cuisine) {  
+            session.endDialogWithResult({ response: reservation.cuisine });
+            return; 
+        }
+    
+        // Ask cuisines
+        const cuisines = await RestaurantService.getCuisines(reservation.location!);
+        const cardActions = _.map(cuisines, (x) => {
+            return CardAction.imBack(session, x.name, `${x.name} (${x.count})`);
+        });
+
+        const choices = _.map(cuisines, (x) => x.name);
+        const suggestedActions = SuggestedActions.create(session, cardActions);
+
+        const msg = new Message(session)
+            .text('CUISINE_REQUEST')
+            .suggestedActions(suggestedActions);
+    
+        const retryPrompt = new Message(session)
+             .text('CUISINE_UNRECOGNIZED')
+             .suggestedActions(suggestedActions);
+
+        Prompts.choice(session, msg, choices, { retryPrompt });
+    },
+    async (session, results, _next) => {
+        // Get cuisine
+        const cuisine = results.response;
+        const reservation: Reservation = session.privateConversationData.reservation;
+
+        if (RestaurantService.hasRestaurantsWithCuisine(reservation.location!, cuisine)) {
+            reservation.cuisine = cuisine.entity;
+            session.send('CUISINE_CONFIRMATION');
+            session.endDialogWithResult({ response: cuisine });                    
+        }                     
+    }
+]);
+
+export { dialog as CuisineDialog }
+```
+
+### Restaurant Dialog
+
+Create `restaurant-dialog.ts` in dialogs directory.
+
+In this restaurant dialog, 
+
+    * Check whether reservation's restaurant is available
+    * If there is reservation's restaurant, end this dialog with result
+    * Otherwise, prompts the user with restaurants available in the location and cuisine with retryPrompt (with unrecognized restaurant message as text)
+    * Once user enters the response, get the restaurant from restaurant service.
+    * Save the restaurant details in state data and `endDialog` with result.
+
+```typescript
+import { AttachmentLayout, CardAction, CardImage, Message, Prompts, ThumbnailCard, WaterfallDialog } from "botbuilder";
+import * as _ from "lodash";
+import { Reservation } from "../model/reservation";
+import { RestaurantService } from "../service/restaurant-service";
+
+const dialog = new WaterfallDialog([
+    async (session, _args, _next) => {
+        const reservation: Reservation = session.privateConversationData.reservation;
+        if(reservation.restaurant) {
+            session.endDialogWithResult({ response: reservation.restaurant });
+        }
+
+        // Ask restaurants to select
+        const restaurants = await RestaurantService.getRestaurants(reservation.location!, reservation.cuisine!);
+        const cardAttachments = _.map(restaurants, (restaurant) => {
+            const card = new ThumbnailCard(session)
+                .title(restaurant.name)
+                .subtitle(restaurant.address)
+                .images([CardImage.create(session, restaurant.logoUrl.toString())])
+                .buttons([
+                    CardAction.openUrl(session, restaurant.url.toString(), 'More Info'),
+                    CardAction.imBack(session, restaurant.name, 'Select')
+                ])
+            return card.toAttachment();
+        });
+
+        const choices = _.map(restaurants, (x) => x.name);
+
+        const msg = new Message(session)
+            .text('RESTAURANT_REQUEST', reservation.cuisine, reservation.location)
+            .attachments(cardAttachments)
+            .attachmentLayout(AttachmentLayout.carousel);
+
+        const retryPrompt = new Message(session)
+             .text('RESTAURANT_UNRECOGNIZED')
+             .attachments(cardAttachments)
+             .attachmentLayout(AttachmentLayout.carousel);
+
+        Prompts.choice(session, msg, choices, { retryPrompt });
+    },
+    async (session, results, _next) => {
+        // Get restaurant
+        const restaurantName = results.response.entity;
+        const reservation: Reservation = session.privateConversationData.reservation;
+
+        const restaurant = await RestaurantService.getRestaurant(reservation.location!, restaurantName);
+
+        if (restaurant) {
+            reservation.restaurant = restaurant;
+            session.send('RESTAURANT_CONFIRMATION', restaurant.name);
+            session.endDialogWithResult({ response: restaurant });
+        }     
+    }
+]);
+
+export { dialog as RestaurantDialog }
+```
+
+### When Dialog
+
+Create `whend-dialog.ts` in dialogs directory.
+
+In this when dialog, 
+
+    * Check whether reservation's when is available
+    * If there is reservation's when, end this dialog with result
+    * Otherwise, prompts the user to enter the date and time.
+    * Once user enters the response, save the `when` in state data and `endDialog` with result.
+
+```typescript
+import { EntityRecognizer, Prompts, WaterfallDialog } from "botbuilder";
+import * as moment from "moment";
+import { Reservation } from "../model/reservation";
+
+const dialog = new WaterfallDialog([
+    async (session, _args, next) => {
+        const reservation: Reservation = session.privateConversationData.reservation;
+        if (reservation.when) { 
+            session.endDialogWithResult({ response: reservation.when });
+            return; 
+        }
+        // Ask time
+        Prompts.time(session, 'WHEN_REQUEST', { retryPrompt: 'WHEN_UNRECOGNIZED' });
+    },
+    async (session, results, _next) => {
+        // Get time
+        let whenTime : Date | null = null;
+        if (results.response) {
+            whenTime = EntityRecognizer.resolveTime([results.response]);
+
+            const reservation: Reservation = session.privateConversationData.reservation;
+            reservation.when = whenTime;
+
+            session.send('WHEN_CONFIRMATION', reservation.restaurant!.name, moment(whenTime).format('LLLL'));            
+            session.endDialogWithResult({ response: whenTime });
+        }             
+    }
+]);
+
+export { dialog as WhenDialog }
+```
+### Party Size Dialog
+
+Create `party-size-dialog.ts` in dialogs directory.
+
+In this partySize dialog, 
+
+    * Check whether reservation's partySize is available
+    * If there is reservation's partySize, end this dialog with result
+    * Otherwise, prompts the user to enter the number.
+    * Once user enters the response, save the `partySize` in state data and `endDialog` with result.
+
+```typescript
+import { Prompts, WaterfallDialog } from "botbuilder";
+import { Reservation } from "../model/reservation";
+
+const dialog = new WaterfallDialog([
+    async (session, _args, next) => {
+        const reservation: Reservation = session.privateConversationData.reservation;
+        if (reservation.partySize) {
+            session.endDialogWithResult({ response: reservation.partySize });
+            return; 
+        }
+
+        // Ask party sizes
+        Prompts.number(session, 'PARTY_REQUEST', { retryPrompt: 'PARTY_UNRECOGNIZED'});
+    },
+    async (session, results, _next) => {
+        // Get party size
+        const partySize = results.response;
+        if (partySize) {
+            const reservation: Reservation = session.privateConversationData.reservation;
+            // tslint:disable-next-line:radix
+            reservation.partySize = parseInt(partySize);
+
+            session.send('CONFIRMATION');
+            session.endDialogWithResult({ response: partySize });
+        }
+    }
+]);
+
+export { dialog as PartySizeDialog }
+```
+
+#### Confirm Reservation Dialog
+
+Create `confirm-reservation-dialog.ts` in dialogs directory.
+
+In this confirm-reservation dialog, we render a HeroCard, showing the selected restaurant name, reservation date, restaurant logo, etc, with button `Reserve`. Once user clicks the button `Reserve`, we are reserving the restaurant. (Don't worry, we are not making any actual reservations for this lab)
+
+```typescript
+import { CardAction, CardImage, HeroCard, Message, Prompts, WaterfallDialog } from "botbuilder";
+import * as moment from "moment";
+import { Reservation } from "../model/reservation";
+import { Restaurant } from "../model/restaurant";
+
+const dialog = new WaterfallDialog([
+    async (session, _args, _next) => {
+        // Ask confirmation
+        const reservation: Reservation = session.privateConversationData.reservation;
+        const when = moment(reservation.when);
+        const restaurant = Restaurant.fromJson(reservation.restaurant);
+
+        const card = new HeroCard(session)
+            .title(`${restaurant.name} (${reservation.partySize})`)
+            .subtitle(when.format('LLLL'))
+            .text(`${restaurant.address}`)
+            .images([CardImage.create(session, restaurant.logoUrl.toString())])
+            .buttons([CardAction.imBack(session, 'Reserve', 'Reserve')]);
+
+        const msg = new Message(session)
+            .text('RESERVATION_CONFIRMATION')
+            .attachments([card.toAttachment()]);
+
+        const retryPrompt = new Message(session)
+            .text('CONFIRMATION_UNRECOGNIZED')
+            .attachments([card.toAttachment()]);
+
+        Prompts.choice(session, msg, 'Reserve', { retryPrompt });
+    },
+    async (session, results, _next) => {
+        if (results.response.entity === 'Reserve') {
+            // Ask confirmation
+            session.endDialogWithResult({ response: 'confirmed' });
+        }
+    }
+]);
+
+export { dialog as ConfirmReservationDialog }
+```
+
+### Demo
+
 Let's run it!  Fire up the Bot Emulator and enter the following information:
 
 1. First, ask your bot to `make me a reservation`
