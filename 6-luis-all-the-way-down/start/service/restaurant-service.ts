@@ -6,16 +6,6 @@ import { Restaurant } from '../model/restaurant';
 const EAT_STREET_API_URL: string = 'https://api.eatstreet.com/publicapi/v1';
 
 export abstract class RestaurantService {
-    private static eatsApiRequest = rp.defaults({           
-        headers: {
-            'X-Access-Token': process.env.EAT_STREET_API_KEY
-        }, 
-        json: true,
-        qs: {           
-            'method': 'both',
-            'pickup-radius': 20
-        }
-    });
 
     public static async getCuisines(location: string): Promise<Cuisine[]> {
         const url = EAT_STREET_API_URL + '/restaurant/search';
@@ -58,4 +48,15 @@ export abstract class RestaurantService {
             (json:any) => Restaurant.fromJson(json));
         return restaurants && restaurants.length > 0;
     }
+
+    private static eatsApiRequest = rp.defaults({           
+        headers: {
+            'X-Access-Token': process.env.EAT_STREET_API_KEY
+        }, 
+        json: true,
+        qs: {           
+            'method': 'both',
+            'pickup-radius': 20
+        }
+    });
 }

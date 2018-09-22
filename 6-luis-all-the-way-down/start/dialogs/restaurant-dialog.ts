@@ -6,8 +6,11 @@ import { RestaurantService } from "../service/restaurant-service";
 const dialog = new WaterfallDialog([
     async (session, _args, _next) => {
         const reservation: Reservation = session.privateConversationData.reservation;
+        if(reservation.restaurant) {
+            session.endDialogWithResult({ response: reservation.restaurant });
+        }
 
-        // Ask restaurants toselect
+        // Ask restaurants to select
         const restaurants = await RestaurantService.getRestaurants(reservation.location!, reservation.cuisine!);
         const cardAttachments = _.map(restaurants, (restaurant) => {
             const card = new ThumbnailCard(session)

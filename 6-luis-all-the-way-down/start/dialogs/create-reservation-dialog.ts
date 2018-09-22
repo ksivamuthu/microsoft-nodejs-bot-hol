@@ -1,3 +1,4 @@
+import * as Recognizers from "@microsoft/recognizers-text-suite";
 import { EntityRecognizer, IEntity, WaterfallDialog } from "botbuilder";
 import * as moment from "moment";
 import { CONSTANTS } from "../constants";
@@ -17,7 +18,13 @@ const findPartySize = (entities: IEntity[]): number | undefined => {
     const partySizeEntity = EntityRecognizer.findEntity(entities, CONSTANTS.entity.partySizeKey);
     const size = partySizeEntity ? partySizeEntity.entity : null;
     // tslint:disable-next-line:radix
-    return size ? parseInt(size) : undefined;
+    if(size) {
+        const results = Recognizers.recognizeNumber(size, Recognizers.Culture.English);
+        if(results && results[0]) {
+            return parseInt(results[0].resolution.value, 10);
+        }
+    }
+    return;
 };
 
 const findWhen = (entities: IEntity[]): Date | undefined => {
