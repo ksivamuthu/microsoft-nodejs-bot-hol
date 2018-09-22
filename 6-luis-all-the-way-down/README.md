@@ -248,4 +248,4 @@ Hopefully this helps instill the importance of supporting fluid conversations wh
 In this lab, we learned some relatively simple design patterns for integrating LUIS at all levels of a **conversation**, making our bots adaptive to fluid requests.  By doing so, we were able to drastically improve the user experience of our bot application.
 
 ## Next Steps
-There may be times that you want to globally handle specific responses regardless of the user's current position in the **DialogStack** (such as the user typing *help* or *cancel*).  In [Lab 7](7-scorables) we'll introduce the concept of **Scorables** and global message handlers to do exactly that.
+There may be times that you want to globally handle specific responses regardless of the user's current position in the **DialogStack** (such as the user typing *help* or *cancel*).  In [Lab 7](../7-scorables) we'll introduce the concept of **Scorables** and global message handlers to do exactly that.
