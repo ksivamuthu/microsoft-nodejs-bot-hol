@@ -3,14 +3,14 @@ import { Reservation } from "../model/reservation";
 import { RestaurantService } from "../service/restaurant-service";
 
 const dialog = new WaterfallDialog([
-    (session, args, next) => {
+    (session, args, _next) => {
         const reservation: Reservation = session.privateConversationData.reservation;
         if (reservation.location) { 
             session.endDialogWithResult({response: reservation.location});
             return;
         }
         
-        if(args && args.reprompt) {
+        if(args && args.unrecognized) {
             Prompts.text(session, 'LOCATION_UNRECOGNIZED');
         } else {                    
             Prompts.text(session, 'LOCATION_REQUEST');
@@ -26,7 +26,7 @@ const dialog = new WaterfallDialog([
             session.send('LOCATION_CONFIRMATION', location);
             session.endDialogWithResult({ response: location });
         } else {
-            session.replaceDialog('LocationDialog', { reprompt: true });
+            session.replaceDialog('LocationDialog', { unrecognized: true });
         }        
     }
 ]);

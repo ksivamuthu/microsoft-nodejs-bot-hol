@@ -28,7 +28,12 @@ const dialog = new WaterfallDialog([
             .attachments(cardAttachments)
             .attachmentLayout(AttachmentLayout.carousel);
 
-        Prompts.choice(session, msg, choices);
+        const retryPrompt = new Message(session)
+             .text('RESTAURANT_UNRECOGNIZED')
+             .attachments(cardAttachments)
+             .attachmentLayout(AttachmentLayout.carousel);
+
+        Prompts.choice(session, msg, choices, { retryPrompt });
     },
     async (session, results, _next) => {
         // Get restaurant
@@ -41,10 +46,7 @@ const dialog = new WaterfallDialog([
             reservation.restaurant = restaurant;
             session.send('RESTAURANT_CONFIRMATION', restaurant.name);
             session.endDialogWithResult({ response: restaurant });
-        } else {
-            session.send('RESTAURANT_UNRECOGNIZED', restaurantName, reservation.location);
-            session.replaceDialog('RestaurantDialog');
-        }        
+        }     
     }
 ]);
 

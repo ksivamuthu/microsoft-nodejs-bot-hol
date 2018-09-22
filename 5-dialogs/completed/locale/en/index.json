@@ -5,7 +5,7 @@
     "CONFIRMATION": "Got it",
     "CUISINE_CONFIRMATION": "Alright, let's see what we can find.",
     "CUISINE_REQUEST": "What type of food are you in the mood for?",
-    "CUISINE_UNRECOGNIZED": "Hmm, I can't seem to find any *%s* restaurants in your area.  Here are some options that I did find:",
+    "CUISINE_UNRECOGNIZED": "Hmm, I can't seem to find that cuisine restaurants in your area.  Here are some options that I did find:",
     "GREETINGS": ["Sure, I can help you with that.", "I'm on it.", "Sure. I'm ready to help you at any time."],
     "LOCATION_CONFIRMATION": "Alright, **%s** it is. I'll look for options in  your area.",
     "LOCATION_REQUEST": "Where will you be eating?  I'll look for restaurants in your area.",
@@ -17,7 +17,7 @@
     "RESERVATION_CONFIRMATION": "OK, here's what I have.  Click 'Reserve' to confirm your reservation.",
     "RESTAURANT_CONFIRMATION": "Sounds good...**%s** it is!",
     "RESTAURANT_REQUEST": "Here are some **%s** restaurants I found near *%s*:",
-    "RESTAURANT_UNRECOGNIZED": "I'm sorry, but I can't find *%s*.  Here are some restaurants I did find in *%s*:",
+    "RESTAURANT_UNRECOGNIZED": "I'm sorry, but I can't find the restaurant.  Here are some restaurants I did find:",
     "WHEN_CONFIRMATION": "Got it.  I'll book the reservation for **%s** at **%s**",
     "WHEN_REQUEST": "When will you be eating?",
     "WHEN_UNRECOGNIZED": "I'm sorry, I didn't understand you.  When did you plan to eat?  I just need to know the day and time."

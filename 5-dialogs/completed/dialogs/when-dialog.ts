@@ -10,7 +10,7 @@ const dialog = new WaterfallDialog([
             return; 
         }
         // Ask time
-        Prompts.time(session, 'WHEN_REQUEST');
+        Prompts.time(session, 'WHEN_REQUEST', { retryPrompt: 'WHEN_UNRECOGNIZED' });
     },
     async (session, results, _next) => {
         // Get time
@@ -21,12 +21,9 @@ const dialog = new WaterfallDialog([
             const reservation: Reservation = session.privateConversationData.reservation;
             reservation.when = whenTime;
 
-            session.send('WHEN_CONFIRMATION', reservation.restaurant!.name, moment(whenTime).format('LLLL'));
+            session.send('WHEN_CONFIRMATION', reservation.restaurant!.name, moment(whenTime).format('LLLL'));            
             session.endDialogWithResult({ response: whenTime });
-        } else {
-            session.send('WHEN_UNRECOGNIZED');
-            session.replaceDialog('WhenDialog');
-        }                
+        }             
     }
 ]);
 
