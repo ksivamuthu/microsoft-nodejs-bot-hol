@@ -7,6 +7,11 @@ const dialog = new WaterfallDialog([
     async (session, _args, _next) => {
         const reservation: Reservation = session.privateConversationData.reservation;
 
+        if (reservation.restaurant) {
+            session.endDialogWithResult({ response: reservation.restaurant });
+            return; 
+        }
+
         // Ask restaurants toselect
         const restaurants = await RestaurantService.getRestaurants(reservation.location!, reservation.cuisine!);
         const cardAttachments = _.map(restaurants, (restaurant) => {
