@@ -1,5 +1,6 @@
 // Load .env files as process variables
-require('dotenv').config();
+import * as dotenv from "dotenv";
+dotenv.config();
 
 import * as restify from 'restify';
 import { MemoryBotStorage, UniversalBot, ChatConnector, LuisRecognizer, Prompts, PromptType, PromptAttachment, PromptChoice, PromptConfirm, PromptNumber, PromptText, PromptTime, Session } from 'botbuilder';
@@ -7,13 +8,13 @@ import { BotServiceConnector } from 'botbuilder-azure';
 import { ConfirmReservationDialog } from "./dialogs/confirm-reservation-dialog";
 import { CreateReservationDialog } from "./dialogs/create-reservation-dialog";
 import { CuisineDialog } from "./dialogs/cuisine-dialog";
+import { EndConversationDialog } from './dialogs/end-conversation-dialog';
 import { LocationDialog } from "./dialogs/location-dialog";
 import { PartySizeDialog } from "./dialogs/party-size-dialog";
 import { RestaurantDialog } from "./dialogs/restaurant-dialog";
 import { WhenDialog } from "./dialogs/when-dialog";
 import { CONSTANTS } from './constants';
 import * as _ from 'lodash';
-import { CancelConversationDialog } from './dialogs/cancel-conversation-dialog';
 
 const useEmulator = (process.env.NODE_ENV == 'development');
 
@@ -87,7 +88,7 @@ bot.dialog('RestaurantDialog', RestaurantDialog);
 bot.dialog('WhenDialog', WhenDialog);
 bot.dialog('PartySizeDialog', PartySizeDialog);
 bot.dialog('ConfirmReservationDialog', ConfirmReservationDialog);
-bot.dialog('CancelConversationDialog', CancelConversationDialog)
+bot.dialog('EndConversationDialog', EndConversationDialog)
     .triggerAction({ matches: ['EndConversation'] });
 
 // Create restify server

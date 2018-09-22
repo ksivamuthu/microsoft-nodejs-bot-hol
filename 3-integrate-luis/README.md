@@ -10,9 +10,6 @@ Packages to install:
 
 ```bash
 npm i moment @microsoft/recognizers-text-suite --save
-
-npm i @types/moment --save-dev
-
 ```
 
 New files:
