@@ -4,7 +4,6 @@ require('dotenv').config();
 import * as restify from 'restify';
 import { MemoryBotStorage, UniversalBot, ChatConnector, LuisRecognizer, Prompts, PromptType, PromptAttachment, PromptChoice, PromptConfirm, PromptNumber, PromptText, PromptTime, Session } from 'botbuilder';
 import { BotServiceConnector } from 'botbuilder-azure';
-import { CancelConversationDialog } from "./dialogs/cancel-conversation-dialog";
 import { ConfirmReservationDialog } from "./dialogs/confirm-reservation-dialog";
 import { CreateReservationDialog } from "./dialogs/create-reservation-dialog";
 import { CuisineDialog } from "./dialogs/cuisine-dialog";
@@ -14,6 +13,7 @@ import { RestaurantDialog } from "./dialogs/restaurant-dialog";
 import { WhenDialog } from "./dialogs/when-dialog";
 import { CONSTANTS } from './constants';
 import * as _ from 'lodash';
+import { CancelConversationDialog } from './dialogs/cancel-conversation-dialog';
 
 const useEmulator = (process.env.NODE_ENV == 'development');
 
@@ -41,6 +41,21 @@ const LuisModelUrl = 'https://' + luisAPIHostName + '/luis/v2.0/apps/' + luisApp
 const recognizer = new LuisRecognizer(LuisModelUrl);
 bot.recognizer(recognizer);
 
+bot.recognizer({
+    recognize: function (context, done) {
+        let error: Error | null;
+        let intent = { score: 0.0, intent: '' };
+        const values = ['cancel', 'nevermind', 'never mind', 'forget it', 'forgetit'];
+        
+        if (context.message.text) {
+            if (_.includes(values, context.message.text.toLowerCase())) {
+                intent = { score: 1.0, intent: 'EndConversation' };
+            }
+        }        
+        done(error!, intent);
+    }
+});
+
 const dialogMatches = [
     CONSTANTS.intents.CREATE_RESERVATION, CONSTANTS.intents.SET_RESERVATION_CUISINE,
     CONSTANTS.intents.SET_RESERVATION_DATE, CONSTANTS.intents.SET_RESERVATION_LOCATION,
@@ -59,21 +74,6 @@ Prompts.customize(PromptType.confirm, new PromptConfirm().recognizer(recognizer)
 Prompts.customize(PromptType.number, new PromptNumber().recognizer(recognizer).matchesAny(dialogMatches, luisPromptHandler));
 Prompts.customize(PromptType.text, new PromptText().recognizer(recognizer).matchesAny(dialogMatches, luisPromptHandler));
 Prompts.customize(PromptType.time, new PromptTime().recognizer(recognizer).matchesAny(dialogMatches, luisPromptHandler));
-
-bot.recognizer({
-    recognize: function (context, done) {
-        let error: Error | null;
-        let intent = { score: 0.0, intent: '' };
-        const values = ['cancel', 'nevermind', 'never mind', 'forget it', 'forgetit'];
-        
-        if (context.message.text) {
-            if (_.includes(values, context.message.text.toLowerCase())) {
-                intent = { score: 1.0, intent: 'EndConversation' };
-            }
-        }        
-        done(error!, intent);
-    }
-});
 
 bot.dialog('CreateReservation', CreateReservationDialog)
    .triggerAction({ matches: [

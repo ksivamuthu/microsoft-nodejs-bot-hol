@@ -10,7 +10,7 @@ const dialog = new WaterfallDialog([
         }
 
         // Ask party sizes
-        Prompts.number(session, 'PARTY_REQUEST');
+        Prompts.number(session, 'PARTY_REQUEST', { retryPrompt: 'PARTY_UNRECOGNIZED'});
     },
     async (session, results, _next) => {
         // Get party size
@@ -21,8 +21,8 @@ const dialog = new WaterfallDialog([
             reservation.partySize = parseInt(partySize);
 
             session.send('CONFIRMATION');
+            session.endDialogWithResult({ response: partySize });
         }
-        session.endDialogWithResult({ response: partySize });
     }
 ]);
 

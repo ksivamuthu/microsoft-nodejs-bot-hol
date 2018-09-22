@@ -1,7 +1,9 @@
 import { EntityRecognizer, IEntity, IIntent, WaterfallDialog } from "botbuilder";
+import * as Recognizers from '@microsoft/recognizers-text-suite';
 import * as moment from "moment";
 import { CONSTANTS } from "../constants";
 import { Reservation } from "../model/reservation";
+import * as _ from 'lodash';
 
 const findLocation = (entities: IEntity[]): string => {
     const locationEntity = EntityRecognizer.findEntity(entities, CONSTANTS.entity.locationKey);
@@ -17,7 +19,13 @@ const findPartySize = (entities: IEntity[]): number | undefined => {
     const partySizeEntity = EntityRecognizer.findEntity(entities, CONSTANTS.entity.partySizeKey);
     const size = partySizeEntity ? partySizeEntity.entity : null;
     // tslint:disable-next-line:radix
-    return size ? parseInt(size) : undefined;
+    if(size) {
+        const results = Recognizers.recognizeNumber(size, Recognizers.Culture.English);
+        if(results && results[0]) {
+            return parseInt(results[0].resolution.value);
+        }
+    }
+    return;
 };
 
 const findWhen = (entities: IEntity[]): Date | undefined => {
@@ -25,7 +33,10 @@ const findWhen = (entities: IEntity[]): Date | undefined => {
     const whenTimeEntity = EntityRecognizer.findEntity(entities, CONSTANTS.entity.timeKey);
     const when = whenDateTimeEntity || whenTimeEntity;
     if (when) {
-        return EntityRecognizer.parseTime(when.entity);
+        const results = Recognizers.recognizeDateTime(when.entity, Recognizers.Culture.English);
+        if(results && results[0]) {
+            return results[0].resolution.value;
+        }
     }
     return;
 }
@@ -50,6 +61,8 @@ const dialog = new WaterfallDialog([
                 const location = findLocation(entities);
                 if (location) {
                     reservation.location = location;
+                    // Reset restaurant when location and cuisine changes
+                    reservation.restaurant = undefined;
                     session.send('LOCATION_CONFIRMATION', reservation.location);
                 }
                 break;
@@ -57,6 +70,8 @@ const dialog = new WaterfallDialog([
                 const cuisine = findCuisine(entities);
                 if (cuisine) {
                     reservation.cuisine = cuisine;
+                    // Reset restaurant when location and cuisine changes
+                    reservation.restaurant = undefined;
                     session.send('CUISINE_CONFIRMATION', reservation.cuisine);
                 }
                 break;

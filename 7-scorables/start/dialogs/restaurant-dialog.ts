@@ -3,13 +3,15 @@ import * as _ from "lodash";
 import { Reservation } from "../model/reservation";
 import { RestaurantService } from "../service/restaurant-service";
 
-const restaurantService = new RestaurantService();
 const dialog = new WaterfallDialog([
     async (session, _args, _next) => {
         const reservation: Reservation = session.privateConversationData.reservation;
+        if(reservation.restaurant) {
+            session.endDialogWithResult({ response: reservation.restaurant });
+        }
 
-        // Ask restaurants toselect
-        const restaurants = await restaurantService.getRestaurants(reservation.location!, reservation.cuisine!);
+        // Ask restaurants to select
+        const restaurants = await RestaurantService.getRestaurants(reservation.location!, reservation.cuisine!);
         const cardAttachments = _.map(restaurants, (restaurant) => {
             const card = new ThumbnailCard(session)
                 .title(restaurant.name)
@@ -29,20 +31,25 @@ const dialog = new WaterfallDialog([
             .attachments(cardAttachments)
             .attachmentLayout(AttachmentLayout.carousel);
 
-        Prompts.choice(session, msg, choices);
+        const retryPrompt = new Message(session)
+             .text('RESTAURANT_UNRECOGNIZED')
+             .attachments(cardAttachments)
+             .attachmentLayout(AttachmentLayout.carousel);
+
+        Prompts.choice(session, msg, choices, { retryPrompt });
     },
     async (session, results, _next) => {
         // Get restaurant
         const restaurantName = results.response.entity;
         const reservation: Reservation = session.privateConversationData.reservation;
 
-        const restaurant = await restaurantService.getRestaurant(reservation.location!, restaurantName);
+        const restaurant = await RestaurantService.getRestaurant(reservation.location!, restaurantName);
 
         if (restaurant) {
             reservation.restaurant = restaurant;
             session.send('RESTAURANT_CONFIRMATION', restaurant.name);
-        }
-        session.endDialogWithResult({ response: restaurant });
+            session.endDialogWithResult({ response: restaurant });
+        }     
     }
 ]);
 
