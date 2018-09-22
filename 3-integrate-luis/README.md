@@ -6,6 +6,15 @@ Congratulations on making it this far! At this point you should have setup your 
 
 This lab includes the starter project, which is similar the project we completed in [Lab 1](../1-setup).
 
+Packages to install:
+
+```bash
+npm i moment @microsoft/recognizers-text-suite --save
+
+npm i @types/moment --save-dev
+
+```
+
 New files:
 
 * [Reservation.ts](../3-integrate-luis/start/model/reservation.ts) - It contains a Reservation.ts class file which contains some properties which define a reservation.
@@ -110,30 +119,6 @@ export { dialog as CreateReservationDialog }
 
 As your bot becomes more complicated, you'll likely need to save state as you move from Dialog to Dialog throughout a conversation. In this example, we're going to retrieve the entities from luis recognizer intent object and store them in state.
 
-Let's start by retrieving the LUIS entities from the given LuisResult. Update the CreateReservation dialog steps as follows:
-
-## Retrieve entity from the intent result
-
-Let's retrieve the entitiy from the results from LUIS using EntityRecognizer.
-
-Initialize Private Conversation Data:
-
-```typescript
-// Initiate private Conversation data
-    const reservation: Reservation = session.privateConversationData.reservation || new Reservation();
-    session.privateConversationData.reservation = reservation;
-```
-
-Find Entity from the entities using key:
-
-```typescript
-    const entities: IEntity[] = args.intent.entities;
-    const location = EntityRecognizer.findEntity(entities, CONSTANTS.entity.locationKey); 
-    if(location) {
-        reservation.location= location.entity;
-    }
-```
-
 There are 3 types of state that you can store:
 
 * **User State** - State tied to the user outside of any specific conversation (NOT cleared when a conversation ends)
@@ -144,10 +129,94 @@ There are 3 types of state that you can store:
 
 For the sake of these lab, we are using the built-in memory state provider, however, for production bots you would want to persist state to a more durable storage. To learn more about storing state in Azure Cosmos DB or Azure Table Storage, please refer to the [Managing State](https://docs.microsoft.com/en-us/azure/bot-service/nodejs/bot-builder-nodejs-state?view=azure-bot-service-3.0) documentation provided by Microsoft.
 
+Let's start by retrieving the LUIS entities from the given LuisResult. Update the CreateReservation dialog steps as follows:
+
+## Retrieve entity from the intent result
+
+Let's retrieve the entitiy from the results from LUIS using EntityRecognizer.
+
+Initialize Private Conversation Data:
+
+```typescript
+const dialog = new WaterfallDialog([
+    (session, args, next) => {
+        session.endDialog('Looks like your attempting to create a reservation.');
+
+         // Initiate private Conversation data
+        const reservation: Reservation = session.privateConversationData.reservation || new Reservation();
+        session.privateConversationData.reservation = reservation;
+    
+        // Entities
+        const entities: IEntity[] = args.intent.entities;
+    }
+]); 
+```
+
+#### Find Location Entity from the entities using key:
+
+```typescript    
+    // Find location
+    const findLocation = (entities: IEntity[]): string => {
+        const locationEntity = EntityRecognizer.findEntity(entities, CONSTANTS.entity.locationKey);
+        return locationEntity ? locationEntity.entity : null;
+    };
+
+    const location = findLocation();
+```
+
+#### Find Cuisine Entity from the entities using key:
+
+```typescript    
+    // Find cuisine
+    const findCuisine = (entities: IEntity[]): string => {
+        const cuisineEntity = EntityRecognizer.findEntity(entities, CONSTANTS.entity.cuisineKey);
+        return cuisineEntity ? cuisineEntity.entity : null;
+    };
+
+    const location = findCuisine();
+```
+
+#### Find PartySize Entity from the entities using key:
+
+To parse the english numeral to number, lets use `Recognizers` library to parse the number. For eg, "six" to 6.
+
+```typescript    
+const findPartySize = (entities: IEntity[]): number | undefined => {
+    const partySizeEntity = EntityRecognizer.findEntity(entities, CONSTANTS.entity.partySizeKey);
+    const size = partySizeEntity ? partySizeEntity.entity : null;
+    if(size) {
+        const results = Recognizers.recognizeNumber(size, Recognizers.Culture.English);
+        if(results && results[0]) {
+            return parseInt(results[0].resolution.value, 10);
+        }
+    }
+    return;
+};
+
+const partySize = findPartySize();
+```
+
+#### Find When Entity from the entities using key:
+
+The when entity can be either date time or time. Let's look for both entities and recognize time to get date object.
+
+```typescript    
+const findWhen = (entities: IEntity[]): Date | undefined => {
+    const whenDateTimeEntity = EntityRecognizer.findEntity(entities, CONSTANTS.entity.datetimeKey);
+    const whenTimeEntity = EntityRecognizer.findEntity(entities, CONSTANTS.entity.timeKey);
+    const when = whenDateTimeEntity || whenTimeEntity;
+    if (when) {
+        return EntityRecognizer.parseTime(when.entity);
+    }
+    return;
+};
+
+const when = findWhen();
+```
 
 Let's continue to build out our CreateReservation dialog. Here's the final result:
 
-```js
+```typescript
 const dialog = new WaterfallDialog([
     (session, args, next) => {
         const reservation: Reservation = session.privateConversationData.reservation || new Reservation();
