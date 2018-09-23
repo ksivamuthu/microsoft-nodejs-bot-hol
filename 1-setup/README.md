@@ -59,7 +59,7 @@ In this lab, we'll setup our VSCode IDE for our Bot Framework development enviro
 5. Create a file called `app.ts`. To test that you have the TypeScript compiler tsc installed correctly and working, open a terminal and type `tsc` You can use the `Integrated Terminal` directly in VS Code. You should now see the transpiled `app.js` JavaScript file.
 
 6. **Build Task** - Execute `Run Build Task...` from the global Tasks menu. If you created a tsconfig.json file in the earlier section, this should present the following picker:
-![](./images/typescript-build.png)
+![](../images/setup/typescript-build.png)
     Select the tsc: build entry. This will produce a app.js and app.js.map file in the workspace.
 
     If you selected tsc: watch, the TypeScript compiler watches for changes to your TypeScript files and runs the transpiler on each change.
