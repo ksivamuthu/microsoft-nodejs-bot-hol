@@ -3,7 +3,6 @@ import * as dotenv from "dotenv";
 dotenv.config();
 
 import { ChatConnector, LuisRecognizer, MemoryBotStorage, UniversalBot } from "botbuilder";
-import { BotServiceConnector } from "botbuilder-azure";
 import * as restify from "restify";
 import { CONSTANTS } from "./constants";
 import { ConfirmReservationDialog } from "./dialogs/confirm-reservation-dialog";
@@ -14,12 +13,11 @@ import { PartySizeDialog } from "./dialogs/party-size-dialog";
 import { RestaurantDialog } from "./dialogs/restaurant-dialog";
 import { WhenDialog } from "./dialogs/when-dialog";
 
-const useEmulator = (process.env.NODE_ENV === 'development');
-
 // Construct connector
-const connector =  useEmulator ? new ChatConnector() : new BotServiceConnector ({
-    appId: process.env.MICROSOFT_APP_ID,
-    appPassword: process.env.MICROSOFT_APP_PASSWORD
+const connector =  new ChatConnector({
+    appId: process.env.MicrosoftAppId,
+    appPassword: process.env.MicrosoftAppPassword,
+    openIdMetadata: process.env.BotOpenIdMetadata
 });
 
 // Construct Bot

@@ -1,9 +1,9 @@
 // Load .env files as process variables
-require('dotenv').config();
+import * as dotenv from 'dotenv';
+dotenv.config();
 
 import * as restify from 'restify';
 import { MemoryBotStorage, UniversalBot, ChatConnector, LuisRecognizer, Prompts, PromptType, PromptAttachment, PromptChoice, PromptConfirm, PromptNumber, PromptText, PromptTime, Session } from 'botbuilder';
-import { BotServiceConnector } from 'botbuilder-azure';
 import { ConfirmReservationDialog } from "./dialogs/confirm-reservation-dialog";
 import { CreateReservationDialog } from "./dialogs/create-reservation-dialog";
 import { CuisineDialog } from "./dialogs/cuisine-dialog";
@@ -13,12 +13,11 @@ import { RestaurantDialog } from "./dialogs/restaurant-dialog";
 import { WhenDialog } from "./dialogs/when-dialog";
 import { CONSTANTS } from './constants';
 
-const useEmulator = (process.env.NODE_ENV == 'development');
-
 // Construct connector
-const connector =  useEmulator ? new ChatConnector() : new BotServiceConnector ({
-    appId: process.env.MICROSOFT_APP_ID,
-    appPassword: process.env.MICROSOFT_APP_PASSWORD
+const connector =  new ChatConnector({
+    appId: process.env.MicrosoftAppId,
+    appPassword: process.env.MicrosoftAppPassword,
+    openIdMetadata: process.env.BotOpenIdMetadata
 });
 
 // Construct Bot

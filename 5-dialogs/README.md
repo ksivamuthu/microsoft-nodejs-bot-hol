@@ -43,7 +43,7 @@ The code in the *RestaurantServices* uses the publicly available  [EatStreet RES
 
 	![Generate API Key](../images/dialogs/eat-street-registered.png)
 
-3.	Open the *.env* and copy the key to the *EAT_STREET_API_KEY* value 
+3.	Open the *.env* and copy the key to the *EatStreetApiKey* value 
 
 	![Update .env](../images/dialogs/env.png)
 

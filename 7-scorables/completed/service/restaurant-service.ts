@@ -6,9 +6,9 @@ import { Restaurant } from '../model/restaurant';
 const EAT_STREET_API_URL: string = 'https://api.eatstreet.com/publicapi/v1';
 
 export abstract class RestaurantService {
-    private static eatsApiRequest = rp.defaults({           
+    public static eatsApiRequest = rp.defaults({           
         headers: {
-            'X-Access-Token': process.env.EAT_STREET_API_KEY
+            'X-Access-Token': process.env.EatStreetApiKey
         }, 
         json: true,
         qs: {           

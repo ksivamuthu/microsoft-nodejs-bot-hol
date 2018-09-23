@@ -1,16 +1,14 @@
-import * as restify from 'restify';
-import { MemoryBotStorage, UniversalBot, ChatConnector } from 'botbuilder';
-import { BotServiceConnector } from 'botbuilder-azure';
+import * as dotenv from "dotenv";
+dotenv.config();
 
-// Load .env files as process variables
-require('dotenv').config();
-
-const useEmulator = (process.env.NODE_ENV == 'development');
+import * as restify from "restify";
+import { MemoryBotStorage, UniversalBot, ChatConnector } from "botbuilder";
 
 // Construct connector
-const connector =  useEmulator ? new ChatConnector() : new BotServiceConnector ({
-    appId: process.env.MICROSOFT_APP_ID,
-    appPassword: process.env.MICROSOFT_APP_PASSWORD
+const connector =  new ChatConnector({
+    appId: process.env.MicrosoftAppId,
+    appPassword: process.env.MicrosoftAppPassword,
+    openIdMetadata: process.env.BotOpenIdMetadata
 });
 
 // Construct Bot

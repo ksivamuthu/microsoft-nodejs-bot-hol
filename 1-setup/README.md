@@ -115,8 +115,8 @@ Open `app.ts`. We are going to develop a simple hello world bot.
     ```
     NODE_ENV=development
     PORT=3978
-    MICROSOFT_APP_ID=
-    MICROSOFT_APP_PASSWORD=
+    MicrosoftAppId=
+    MicrosoftAppPassword=
     ```
 2. Import required classes at top of the file
     ```typescript
@@ -127,13 +127,14 @@ Open `app.ts`. We are going to develop a simple hello world bot.
 3. Create chat connector. 
     ```typescript
     // Load .env files as process variables
-    require('dotenv').config();
+    import * as dotenv from "dotenv";
+    dotenv.config();
 
-    const useEmulator = (process.env.NODE_ENV == 'development');
-
-    const connector =  useEmulator ? new ChatConnector() : new BotServiceConnector ({
-        appId: process.env.MICROSOFT_APP_ID,
-        appPassword: process.env.MICROSOFT_APP_PASSWORD
+    // Construct connector
+    const connector =  new ChatConnector({
+        appId: process.env.MicrosoftAppId,
+        appPassword: process.env.MicrosoftAppPassword,
+        openIdMetadata: process.env.BotOpenIdMetadata
     });
     ```
 
