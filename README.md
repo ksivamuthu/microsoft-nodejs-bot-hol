@@ -31,6 +31,5 @@ If you want to checkout the .NET version of this lab, [here](https://github.com/
 
 - [Bot Builder](https://github.com/Microsoft/BotBuilder)
 - [Azure Bot Service Documentation](https://docs.microsoft.com/en-us/azure/bot-service/nodejs/bot-builder-nodejs-quickstart?view=azure-bot-service-3.0)
-- [LUIS](https://luis.ai)
-- [Azure Portal](https://portal.azure.com)
+- [LUIS](https://www.luis.ai/home)
 
