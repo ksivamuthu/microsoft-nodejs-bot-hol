@@ -107,7 +107,7 @@ In this lab, we'll setup our VSCode IDE for our Bot Framework development enviro
        "**/*.js.map" : true
    }
     ```
-10. Add `tslint.json` and `.prettierrc` for linting and styling your project based on your standards.
+10. Add `tslint.json` and `.prettierrc` for linting and styling your project based on your standards. Please refer files in completed directory for reference.
 
 ## Develop
 
