@@ -26,7 +26,7 @@ Log into the [Luis Website](https://www.luis.ai) to begin building and training 
 
 ![LUIS Homepage](images/luis-homepage.png)
 
-> To sign into the site, you'll need a valid Microsoft Account.  Preferably, the Microsoft account you select would be associated with an Azure subscription as well, so you can optionally associate your LUIS app with a Standard pricing tier (you *might* start received 403 throttling errors in [Lab 6](https://github.com/gtewksbury/Microsoft-Bot-Framework-HOL/tree/luis-readme/lab%206%20-%20Luis%20all%20the%20way%20down) on the free tier), but this is NOT required for these labs.  If you don't already have one, you can create one by clicking the **Sign-Up** button on the home screen.  Additionally, if this is the first time you've logged into the site, you'll likely be taken to a welcome page and asked to fill in a couple of configuration settings.
+> To sign into the site, you'll need a valid Microsoft Account.  Preferably, the Microsoft account you select would be associated with an Azure subscription as well, so you can optionally associate your LUIS app with a Standard pricing tier (you *might* start received 403 throttling errors in [Lab 6](../6-luis-all-the-way-down) on the free tier), but this is NOT required for these labs.  If you don't already have one, you can create one by clicking the **Sign-Up** button on the home screen.  Additionally, if this is the first time you've logged into the site, you'll likely be taken to a welcome page and asked to fill in a couple of configuration settings.
 
 ### Create a LUIS App
 From the following screen, click the **Create New App** button

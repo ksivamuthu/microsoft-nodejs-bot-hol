@@ -137,7 +137,7 @@ Remember how our `CreateReservation` dialog referenced a number of intents that 
 #### Set Reservation Location Intent
 Browse to your [LUIS App](https://www.luis.ai), and create a new **intent** called *Set Reservation Location*.
 
-> If you need a refresher on creating, training, and publishing intents, refer back to [Lab 2](https://github.com/gtewksbury/Microsoft-Bot-Framework-HOL/tree/master/lab%202%20-%20LUIS).
+> If you need a refresher on creating, training, and publishing intents, refer back to [Lab 2](../2-luis).
 
 Add some **utterances** representing someone wanting to change their location and map the *RestaurantReservation.Address* entities when required.  Here are some examples:
 
