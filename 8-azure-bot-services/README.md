@@ -1,80 +1,69 @@
 # Lab 8 - Azure Bot Services
-Up until this point, we've been interacting with our bot through our local emulator, but how do you actually host your bot so it can be consumed by external **channels**?  In this lab, we'll learn how to deploy our bot application to an Azure Bot Service via Visual Studio.
+
+Up until this point, we've been interacting with our bot through our local emulator, but how do you actually host your bot so it can be consumed by external **channels**?  In this lab, we'll learn how to deploy our bot application to an Azure Bot Service from Visual Studio Code.
 
 ## Create Azure Web App Bot
+
 Log into the [Azure Portal](https://portal.azure.com), and click the *Create a resource* button on the top left of your screen.  On the following screen, select *AI + Cognitive Services* and click *Web App Bot*
 
-![Create Azure Web Bot App](https://github.com/gtewksbury/Microsoft-Bot-Framework-HOL/blob/master/lab%208%20-%20Azure%20Bot%20Services/images/azure-create-resource.png)
+![Create Azure Web Bot App](../images/deploy/webbot-1.png)
 
 Enter the required settings and click the *Create* button
 
-![Create Azure Web Bot App](https://github.com/gtewksbury/Microsoft-Bot-Framework-HOL/blob/master/lab%208%20-%20Azure%20Bot%20Services/images/azure-settings.png)
+![Create Azure Web Bot App](../images/deploy/webbot-nodejs.png)
 
 * **Bot name** must be globally unique.  This will be included in the URL to your Bot API
 * **Pricing Tier** *F0* is free of charge
-* **Bot Template** should be *Basic (C#)*
+* **Bot Template** should be *Basic (NodeJS)*
 
-> The remaining settings are outside the scope of this tutorial, but the defaults should be fine for our purposes
+> The remaining settings are outside the scope of this tutorial, but the defaults should be fine for our purpose.
 
 Once created, you can navigate to your new *Web App Bot* within Azure.  It should look something like this:
 
-![Create Azure Web Bot App](https://github.com/gtewksbury/Microsoft-Bot-Framework-HOL/blob/master/lab%208%20-%20Azure%20Bot%20Services/images/azure-overview.png)
+![Create Azure Web Bot App](../images/deploy/webbot-settings.png)
 
 ## Publish
-The following section walks through publishing your bot through Visual Studio.
+The following section walks through publishing your bot through Visual Studio Code.
 
-> While Visual Studio deployments are fine for our purposes, it's highly recommended to publish production bots through automated CI / CD pipelines.
+> While Visual Studio Code deployments are fine for our purposes, it's highly recommended to publish production bots through automated CI / CD pipelines.
 
-Open you bot solution within Visual Studio, right click you bot project, and select *Publish*
+1. Open you bot project in Visual Studio Code. Open command pallette in Visual Studio Code using `Cmd/Ctrl + Shift + p`. 
 
-![Create Azure Web Bot App](https://github.com/gtewksbury/Microsoft-Bot-Framework-HOL/blob/master/lab%208%20-%20Azure%20Bot%20Services/images/vs-publish.png)
+2. Search for `Azure App Services - Deploy to Web App`
 
-On the following screen, select *Microsoft Azure App Service*, and chose *Select Existing*
+![deploy](../images/deploy/azure-deploy.png)
 
-![Create Azure Web Bot App](https://github.com/gtewksbury/Microsoft-Bot-Framework-HOL/blob/master/lab%208%20-%20Azure%20Bot%20Services/images/vs-publish-step1.png)
+3. Select subscription and the web app we created in this lab before. You may need to connect your subscription before, if you are doing for first time.
 
-Chose your Azure subscription in the dropdown, select the app you just created, and click *OK*
+![deploy-2](../images/deploy/azure-deploy-2.png)
 
-![Create Azure Web Bot App](https://github.com/gtewksbury/Microsoft-Bot-Framework-HOL/blob/master/lab%208%20-%20Azure%20Bot%20Services/images/vs-select-app.png)
+![deploy-2](../images/deploy/azure-deploy-3.png)
 
-
-> Visual Studio will immediately start deploying your application to Azure.  However, once finished we'll need to make a quick change and redeploy.  We'll talk about why in a minute.  
-
-Once Visual Studio is done deploying, click the *Settings* link as shown below:
-
-![Create Azure Web Bot App](https://github.com/gtewksbury/Microsoft-Bot-Framework-HOL/blob/master/lab%208%20-%20Azure%20Bot%20Services/images/vs-settings.png)
-
-In the *Publish* dialog, select *Settings*, and check *Remove additional files at destination* under the *File Publish Options*
-
-![Create Azure Web Bot App](https://github.com/gtewksbury/Microsoft-Bot-Framework-HOL/blob/master/lab%208%20-%20Azure%20Bot%20Services/images/vs-remove.png)
-
-> This tells *WebDeploy* to remove any existing files in the deployment destination prior to deploying your code.  This is important because the *Web Bot App* we created in Azure already has a sample application deployed.  When Visual Studio immediately deployed in the previous step, it did NOT remove these files.  Therefore, with this value set we'll need to deploy again.
-
-Click the *Publish* button as shown below:
-
-![Create Azure Web Bot App](https://github.com/gtewksbury/Microsoft-Bot-Framework-HOL/blob/master/lab%208%20-%20Azure%20Bot%20Services/images/vs-final-publish.png)
+4. Visual Studio Code will immediately start deploying your application to Azure.
 
 Congratulations!  You're bot should now be successfully hosted within a durable Azure App Services environment!
 
 ## Test Web Chat
+
 Let's go back to our app in Azure and explore a bit.  You should notice a *Test in Web Chat* option in the side menu.  Go ahead and click it.
 
 This is a test area for your deployed bot.  Go ahead and type a message to see if it's working!
 
-![Create Azure Web Bot App](https://github.com/gtewksbury/Microsoft-Bot-Framework-HOL/blob/master/lab%208%20-%20Azure%20Bot%20Services/images/azure-test.png)
+![Test Web chat](../images/deploy/test-web-chat.png)
 
-By default, *Web App Bots* have enabled the *Web Chat* **channel** (we'll see where this is done in a moment).  This same web chat experience can easily be added to your own web applications via the [Microsoft Bot Frameworks Embedded Web Chat Control](https://github.com/Microsoft/BotFramework-WebChat).
+By default, *Web App Bots* have enabled the *Web Chat* **channel**  This same web chat experience can easily be added to your own web applications via the [Microsoft Bot Frameworks Embedded Web Chat Control](https://github.com/Microsoft/BotFramework-WebChat).
 
 ## Channels
 
 Let's click the *Channels* link in the Azure Portal.  This is where you configure additional **channels** for your application.  Thankfully, Microsoft provides step-by-step instructions for configuring each supported **channel**, making setup pretty painless.  You can see I've enabled *Slack*!
 
-![Create Azure Web Bot App](https://github.com/gtewksbury/Microsoft-Bot-Framework-HOL/blob/master/lab%208%20-%20Azure%20Bot%20Services/images/azure-web-chat.png)
+![Create Azure Web Bot App](../images/deploy/azure-web-chat.png)
 
 And here's what our bot looks like in *Slack*
 
-![Create Azure Web Bot App](https://github.com/gtewksbury/Microsoft-Bot-Framework-HOL/blob/master/lab%208%20-%20Azure%20Bot%20Services/images/bot-slack.png)
+![Create Azure Web Bot App](../images/deploy/slack.png)
 
 
 ## Quick Recap
-In this lab, we learned how to create a durable bot hosting environment in Azure and how to deploy our bot through Visual Studio.
+
+In this lab, we learned how to create a durable bot hosting environment in Azure and how to deploy our bot through Visual Studio Code.
