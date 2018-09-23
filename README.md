@@ -25,7 +25,7 @@ addressing common commands throughout your bot application.
 
 [Lab 8 - Azure Bot Service](8-azure-bot-services) walks through the process of deploying and hosting your bot logic within a reliable and durable Azure environment.
 
-If you want to checkout the .NET version of this lab, here you go. c(https://github.com/gtewksbury/Microsoft-Bot-Framework-HOL)
+If you want to checkout the .NET version of this lab, [here](https://github.com/gtewksbury/Microsoft-Bot-Framework-HOL) you go. 
 
 ## Reference
 
