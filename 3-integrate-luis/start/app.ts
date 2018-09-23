@@ -25,4 +25,4 @@ bot.set('storage', new MemoryBotStorage());
 // Create restify server
 const server = restify.createServer();
 server.post('/api/messages', connector.listen());
-server.listen(process.env.PORT, () => console.log(`${server.name} listening to ${server.url}`));
+server.listen(process.env.PORT || 3978, () => console.log(`${server.name} listening to ${server.url}`));

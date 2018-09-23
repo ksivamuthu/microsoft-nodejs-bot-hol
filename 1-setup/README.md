@@ -15,9 +15,9 @@ In this lab, we'll setup our VSCode IDE for our Bot Framework development enviro
 * [TSLint](https://github.com/palantir/tslint) - `npm install -g tslint`
 * Knowledge of [restify](http://restify.com) and asynchronous programming in JavaScript
 * Recommended VSCode extensions
-     * TSLint 
-     * Prettier - Code Formatter
-     * Azure App Service
+     * [TSLint](https://marketplace.visualstudio.com/items?itemName=eg2.tslint)
+     * [Prettier - Code Formatter](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
+     * [Azure App Service](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-azureappservice)
 
 >[NOTE] For some installations in windows, the install step for restify is giving an error related to node-gyp. If this is the case try running npm install -g windows-build-tools.
 
@@ -38,7 +38,7 @@ In this lab, we'll setup our VSCode IDE for our Bot Framework development enviro
     npm i restify --save
     npm i dotenv --save
 
-    npm i @types/node @types/restify @types/dotenv --save-dev
+    npm i @types/node @types/restify @types/dotenv tslint typescript tslint-config-prettier --save-dev
     ```
     >The devDependencies contain the types of the various packages we’ll be using. Types are the various interfaces for the objects and classes in a particular package. So `@types/restify` contains the interfaces provided by restify. This will add IntelliSense to the project. In the case of botbuilder, we don’t need to add a types file, as the framework is written in TypeScript, and contains all of the necessary types.
 4. **Configuring Typescript** - The typescript will be transpiled into Javascript. You configure how this occurs using tsconfig.json file. Add a file named tsconfig.json with following content.
@@ -107,11 +107,12 @@ In this lab, we'll setup our VSCode IDE for our Bot Framework development enviro
        "**/*.js.map" : true
    }
     ```
+10. Add `tslint.json` and `.prettierrc` for linting and styling your project based on your standards.
 
 ## Develop
 
 Open `app.ts`. We are going to develop a simple hello world bot.
-1. Create .env file with following values. These variables will be loaded into process.env variables using `dotenv` module. This file is ignored by git, since it might contain secrets.
+1. Create `.env` file with the following values. These variables will be configured into process.env variables using `dotenv` module. This file is ignored by git, since it might contain secrets. Use `.env.schema` for reference.
     ```
     NODE_ENV=development
     PORT=3978
@@ -120,16 +121,15 @@ Open `app.ts`. We are going to develop a simple hello world bot.
     ```
 2. Import required classes at top of the file
     ```typescript
-    import * as restify from 'restify';
-    import { MemoryBotStorage, UniversalBot, ChatConnector } from 'botbuilder';
-    import { BotServiceConnector } from 'botbuilder-azure';
-    ```
-3. Create chat connector. 
-    ```typescript
     // Load .env files as process variables
     import * as dotenv from "dotenv";
     dotenv.config();
 
+    import { ChatConnector, MemoryBotStorage, UniversalBot } from "botbuilder";
+    import * as restify from "restify";
+    ```
+3. Create chat connector. 
+    ```typescript
     // Construct connector
     const connector =  new ChatConnector({
         appId: process.env.MicrosoftAppId,
@@ -153,7 +153,7 @@ Open `app.ts`. We are going to develop a simple hello world bot.
     ```typescript
     const server = restify.createServer();
     server.post('/api/messages', connector.listen());
-    server.listen(process.env.PORT, () => console.log(`${server.name} listening to ${server.url}`));
+    server.listen(process.env.PORT || 3978, () => console.log(`${server.name} listening to ${server.url}`));
     ```
 7. In the default dialog handler of Universal bot, get the text from user and end the dialog with the message.
     ```typescript
@@ -169,14 +169,14 @@ Launch the program using debug bar in VSCode. Make note of the URL in output log
 
 ## Quick Recap
 
-Congratulations, you now have a complete VSCode development environment capable of debugging custom bot applications! Alright, I admit it, the sample bot we created isn't very exciting. But hey, you're now setup and ready to create exciting new user experiences!
+Congratulations, you now have a complete VSCode development environment capable of debugging custom bot applications! Alright, I admit it, the sample bot we created isn't very exciting. But, you're now setup and ready to create exciting new user experiences!
 
 Throughout the remainder of the labs, we'll be building out a bot that helps users make restaurant reservations. Users will be able to ask our bot things like:
 
-* Make me a reservation at a good Indian restaurant in Tampa.
+* Make me a reservation at an Indian restaurant in Tampa.
 * Can you book me a table tomorrow night at 7:30 for Mexican?
 
-But wait a minute, we're simply sending text-based messages to our bot. How can we possibly parse and interpret all the variations of how users might ask for a reservation? That my friends is where `Natural Language processing` and `Machine Learning` comes in.
+But wait a minute, we're sending text-based messages to our bot. How can we possibly parse and interpret all the variations of how users might ask for a reservation? That's where `Natural Language processing` and `Machine Learning` comes in.
 
 ## Next Steps
 

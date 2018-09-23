@@ -1,11 +1,11 @@
-import * as dotenv from "dotenv";
+import * as dotenv from 'dotenv';
 dotenv.config();
 
-import * as restify from "restify";
-import { MemoryBotStorage, UniversalBot, ChatConnector } from "botbuilder";
+import { ChatConnector, MemoryBotStorage, UniversalBot } from 'botbuilder';
+import * as restify from 'restify';
 
 // Construct connector
-const connector =  new ChatConnector({
+const connector = new ChatConnector({
     appId: process.env.MicrosoftAppId,
     appPassword: process.env.MicrosoftAppPassword,
     openIdMetadata: process.env.BotOpenIdMetadata
@@ -13,7 +13,7 @@ const connector =  new ChatConnector({
 
 // Construct Bot
 const bot = new UniversalBot(connector, (session, _args) => {
-    const text = session.message.text!
+    const text = session.message.text!;
     // Count the text length and send it back
     session.endDialog(`You sent '${text}' which was ${text.length} characters`);
 });
@@ -24,4 +24,4 @@ bot.set('storage', new MemoryBotStorage());
 // Create restify server
 const server = restify.createServer();
 server.post('/api/messages', connector.listen());
-server.listen(process.env.PORT, () => console.log(`${server.name} listening to ${server.url}`));
+server.listen(process.env.PORT || 3978, () => console.log(`${server.name} listening to ${server.url}`));
