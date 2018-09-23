@@ -25,21 +25,35 @@ Once created, you can navigate to your new *Web App Bot* within Azure.  It shoul
 ## Publish
 The following section walks through publishing your bot through Visual Studio Code.
 
+Install [Azure App Service extension](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-azureappservice
+) from Visual Studio Code, if you don't have yet.
+
 > While Visual Studio Code deployments are fine for our purposes, it's highly recommended to publish production bots through automated CI / CD pipelines.
+1. Add below snippet in your `.vscode/settings.json` to skip uploading local .env and .vscode files.
 
-1. Open you bot project in Visual Studio Code. Open command pallette in Visual Studio Code using `Cmd/Ctrl + Shift + p`. 
+```json
+  "appService.zipIgnorePattern": [
+        ".env",
+        ".vscode{,/**}",
+        "*.md"
+    ],
+```
 
-2. Search for `Azure App Services - Deploy to Web App`
+You've to add your .env keys/values to "AppSettings" of Azure Web Bot. You can add it in portal or through Azure App Service in Visual Studio Code.
+
+2. Open you bot project in Visual Studio Code. Open command pallette in Visual Studio Code using `Cmd/Ctrl + Shift + p`. 
+
+3. Search for `Azure App Services - Deploy to Web App`
 
 ![deploy](../images/deploy/azure-deploy.png)
 
-3. Select subscription and the web app we created in this lab before. You may need to connect your subscription before, if you are doing for first time.
+4. Select subscription and the web app we created in this lab before. You may need to connect your subscription before, if you are doing for first time.
 
 ![deploy-2](../images/deploy/azure-deploy-2.png)
 
 ![deploy-2](../images/deploy/azure-deploy-3.png)
 
-4. Visual Studio Code will immediately start deploying your application to Azure.
+5. Visual Studio Code will immediately start deploying your application to Azure.
 
 Congratulations!  You're bot should now be successfully hosted within a durable Azure App Services environment!
 

@@ -8,5 +8,10 @@
         "**/*.js.map": true,
         "**/*.js" : { "when": "$(basename).ts" }        
     },
+    "appService.zipIgnorePattern": [
+        ".env",
+        ".vscode{,/**}",
+        "*.md"
+    ],
     "appService.defaultWebAppToDeploy": "None"
 }
