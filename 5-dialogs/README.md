@@ -492,4 +492,4 @@ Congratulations!  At this point you should have a fairly nifty bot that walks us
 2. Rich visualizations in the form of message **Attachments**
 
 ## Next Steps
-While our bot is fairly functional, there's a glaring limitation.  What if the user wants to change information provided in a previous step.  At this point, our bot has no way of handling this.  But fear not, in the [Lab 6](6-luis-all-the-way-down), we're going to kick it up a notch and refactor our bot to support fluid conversations!
+While our bot is fairly functional, there's a glaring limitation.  What if the user wants to change information provided in a previous step.  At this point, our bot has no way of handling this.  But fear not, in the [Lab 6](../6-luis-all-the-way-down), we're going to kick it up a notch and refactor our bot to support fluid conversations!
