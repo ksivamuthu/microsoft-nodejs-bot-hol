@@ -89,7 +89,7 @@ Alright, we're ready to get going!  Below you'll find a high-level blueprint of 
         * IF the party size was NOT retrieved from the original request, ask the user for their preferred number of people and *Wait* for their response
         * OTHERWISE, `endDialog` with result.
     * *Handler*
-        * IF the user-provided party size is valid, save to state nd `endDialog` with result.     
+        * IF the user-provided party size is valid, save to state and `endDialog` with result.     
 * **ConfirmReservationDialog**     
     * *Start*
         * Ask the user to confirm the reservation and *Wait* for their response
@@ -472,7 +472,7 @@ Let's run it!  Fire up the Bot Emulator and enter the following information:
 2. When it asked for a location, type `Pittsburgh`
 3. Next, select a Cuisine from the provided suggestions
 4. Then select a restaurant from the provided options
-5. When asked for the date, type `tommorrow night at 7:30`
+5. When asked for the date, type `tomorrow night at 7:30`
 6. And when asked for the number of people, type `6`
 7. Click *Reserve*
 
@@ -488,7 +488,7 @@ Notice this time you should NOT have been asked to provide a date or number of p
 ## Quick Recap
 Congratulations!  At this point you should have a fairly nifty bot that walks user's through the entire reservation process.  In doing so, we implemented the following:
 
-1. A **Dialog** chain to solicity reservation information from the user
+1. A **Dialog** chain to solicitly reservation information from the user
 2. Rich visualizations in the form of message **Attachments**
 
 ## Next Steps
