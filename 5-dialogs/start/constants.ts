@@ -11,6 +11,7 @@ export class CONSTANTS {
     
     // tslint:disable-next-line:max-classes-per-file
     public static intents = class {
+        public static NONE = 'None';
         public static CREATE_RESERVATION = 'Create Reservation';
         public static SET_RESERVATION_CUISINE = 'Set Reservation Cuisine';
         public static SET_RESERVATION_DATE = 'Set Reservation Date';

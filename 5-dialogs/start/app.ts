@@ -2,40 +2,39 @@
 import * as dotenv from 'dotenv';
 dotenv.config();
 
-import { ChatConnector, LuisRecognizer, MemoryBotStorage, UniversalBot } from 'botbuilder';
+import { ActivityTypes, BotFrameworkAdapter, ConversationState, MemoryStorage } from 'botbuilder';
+import { LuisApplication, LuisRecognizer } from 'botbuilder-ai';
 import * as restify from 'restify';
-import { CONSTANTS } from './constants';
-import { CreateReservationDialog } from "./dialogs/create-reservation-dialog";
+import { CreateReservationBot } from './create-reservation-bot';
 
-// Construct connector
-const connector =  new ChatConnector({
+// Construct adapter
+const adapter = new BotFrameworkAdapter({
     appId: process.env.MicrosoftAppId,
-    appPassword: process.env.MicrosoftAppPassword,
-    openIdMetadata: process.env.BotOpenIdMetadata
+    appPassword: process.env.MicrosoftAppPassword
 });
-
-// Construct Bot
-const bot = new UniversalBot(connector, (session, _args) => {
-    session.endDialog('Sorry, I don\'t understand.  I only know how to make restaurant reservations.');
-});
-
-// Set storage to Bot
-bot.set('storage', new MemoryBotStorage());
-
-const luisAppId = process.env.LuisAppId;
-const luisAPIKey = process.env.LuisAPIKey;
-const luisAPIHostName = process.env.LuisAPIHostName || 'westus.api.cognitive.microsoft.com';
-
-const luisModelUrl = 'https://' + luisAPIHostName + '/luis/v2.0/apps/' + luisAppId + '?subscription-key=' + luisAPIKey;
-
-// Create a recognizer that gets intents from LUIS, and add it to the bot
-const recognizer = new LuisRecognizer(luisModelUrl);
-bot.recognizer(recognizer);
-
-bot.dialog('CreateReservationDialog', CreateReservationDialog)
-   .triggerAction({ matches: CONSTANTS.intents.CREATE_RESERVATION });
 
 // Create restify server
 const server = restify.createServer();
-server.post('/api/messages', connector.listen());
-server.listen(process.env.PORT || 3978, () => console.log(`${server.name} listening to ${server.url}`));
+server.listen(process.env.port || process.env.PORT || 3978, () => console.log(`${server.name} listening to ${server.url}`));
+
+const memoryStorage = new MemoryStorage();
+const conversationState = new ConversationState(memoryStorage);
+
+const luisApplication : LuisApplication = {
+    applicationId: process.env.LuisAppId as string,
+    endpoint: process.env.LuisAPIHostName as string,
+    endpointKey: process.env.LuisAPIKey as string
+};
+
+const luisRecognizer = new LuisRecognizer(luisApplication, { includeAllIntents: false, log: true, staging: false}, true);
+
+const createReservationBot = new CreateReservationBot(luisRecognizer, conversationState);
+
+// Listen for incoming requests.
+server.post('/api/messages', (req, res) => {
+    adapter.processActivity(req, res, async (context) => {
+         if(context.activity.type === ActivityTypes.Message) {
+             await createReservationBot.onTurn(context);             
+         }
+    });
+});

@@ -1,28 +1,25 @@
-// Load .env files as process variables
 import * as dotenv from 'dotenv';
 dotenv.config();
 
+import { ActivityTypes, BotFrameworkAdapter } from 'botbuilder';
 import * as restify from 'restify';
-import { MemoryBotStorage, UniversalBot, ChatConnector } from 'botbuilder';
 
-// Construct connector
-const connector =  new ChatConnector({
+// Construct adapter
+const adapter = new BotFrameworkAdapter({
     appId: process.env.MicrosoftAppId,
-    appPassword: process.env.MicrosoftAppPassword,
-    openIdMetadata: process.env.BotOpenIdMetadata
+    appPassword: process.env.MicrosoftAppPassword
 });
-
-// Construct Bot
-const bot = new UniversalBot(connector, (session, _args) => {
-    const text = session.message.text!
-    // Count the text length and send it back
-    session.endDialog(`You sent '${text}' which was ${text.length} characters`);
-});
-
-// Set storage to Bot
-bot.set('storage', new MemoryBotStorage());
 
 // Create restify server
 const server = restify.createServer();
-server.post('/api/messages', connector.listen());
-server.listen(process.env.PORT || 3978, () => console.log(`${server.name} listening to ${server.url}`));
+server.listen(process.env.port || process.env.PORT || 3978, () => console.log(`${server.name} listening to ${server.url}`));
+
+// Listen for incoming requests.
+server.post('/api/messages', (req, res) => {
+    adapter.processActivity(req, res, async (context) => {
+         if(context.activity.type === ActivityTypes.Message) {
+             const text = context.activity.text;
+             await context.sendActivity(`You sent '${text}' which was ${text.length} characters `);
+         }
+    });
+});
