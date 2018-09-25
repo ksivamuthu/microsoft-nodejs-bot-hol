@@ -33,3 +33,4 @@ If you want to checkout the .NET version of this lab, [here](https://github.com/
 - [Azure Bot Service Documentation](https://docs.microsoft.com/en-us/azure/bot-service/nodejs/bot-builder-nodejs-quickstart?view=azure-bot-service-3.0)
 - [LUIS](https://www.luis.ai/home)
 
+> Please note, Botbuilder v4 is released on Sep 21, 2018. This lab develops a bot using Botbuilder v3.
