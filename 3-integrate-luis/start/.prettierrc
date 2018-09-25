@@ -1,0 +1,16 @@
+{
+  "parser": "typescript",
+  "printWidth": 120,
+  "singleQuote": true,
+  "tabWidth": 4,
+  "overrides": [
+    {
+      "files": ["*.json", ".*rc"],
+      "options": { "parser": "json" }
+    },
+    {
+      "files": ["*.md"],
+      "options": { "parser": "markdown" }
+    }
+  ]
+}
