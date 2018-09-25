@@ -11,10 +11,10 @@ A conversation can be structured and changed in many ways:
 - It can originate from your [default dialog](#default-dialog).
 - It can be redirected from one dialog to another.
 - It can be resumed.
-- It can follow a [waterfall](bot-builder-nodejs-dialog-waterfall.md) pattern, which guides the user through a series of steps or [prompts](bot-builder-nodejs-dialog-prompt.md) the user with a series of questions.
-- It can use [actions](bot-builder-nodejs-dialog-actions.md) that listen for words or phrases that trigger a different dialog. 
+- It can follow a waterfall pattern, which guides the user through a series of steps or prompts the user with a series of questions.
+- It can use actions that listen for words or phrases that trigger a different dialog. 
 
-You can think of a conversation like a parent to dialogs. As such, a conversation contains a *dialog stack* and maintain its own set of state data; namely, the `conversationData` and the `privateConversationData`. A dialog, on the other hand, maintains the `dialogData`. For more information on state data, see [Manage state data](bot-builder-nodejs-state.md).
+You can think of a conversation like a parent to dialogs. As such, a conversation contains a *dialog stack* and maintain its own set of state data; namely, the `conversationData` and the `privateConversationData`. A dialog, on the other hand, maintains the `dialogData`. 
 
 
 ## Dialog stack
