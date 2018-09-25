@@ -130,7 +130,7 @@ Let's start by retrieving the LUIS entities from the given LuisResult. Update th
 
 ## Retrieve entity from the intent result
 
-Let's retrieve the entitiy from the results from LUIS using EntityRecognizer.
+Let's retrieve the entity from the results from LUIS using EntityRecognizer.
 
 Initialize Private Conversation Data:
 
