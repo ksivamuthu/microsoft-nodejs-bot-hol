@@ -1,5 +1,7 @@
 # Lab 1 - Bot Framework Setup
 
+> Please note, Botbuilder v4 is released on Sep 21, 2018. This lab develops a bot using Botbuilder v3. 
+
 In this lab, we'll setup our VSCode IDE for our Bot Framework development environment using NodeJS + Typescript. This includes
 
 1. Setup VSCode and tools to develop the bot framework project.
@@ -33,8 +35,8 @@ In this lab, we'll setup our VSCode IDE for our Bot Framework development enviro
     ```
 3. Install the dependencies and dev dependencies for bot builder project.
     ```sh
-    npm i botbuilder --save
-    npm i botbuilder-azure --save
+    npm i botbuilder@3 --save
+    npm i botbuilder-azure@3 --save
     npm i restify --save
     npm i dotenv --save
 
