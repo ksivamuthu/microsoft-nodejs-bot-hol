@@ -169,6 +169,10 @@ Open `app.ts`. We are going to develop a simple hello world bot.
 Launch the program using debug bar in VSCode. Make note of the URL in output log.
 *http://localhost:3978/api/messages*
 
+Let's open our Bot Emulator. Copy the url into the Bot Emulator and append /api/messages (the url should be http://localhost:3978/api/messages) and click Connect.
+
+You'll notice inputs for Microsoft App ID and Microsoft App Password. You can leave those blank for now as they are not required for local debugging.
+
 ## Quick Recap
 
 Congratulations, you now have a complete VSCode development environment capable of debugging custom bot applications! Alright, I admit it, the sample bot we created isn't very exciting. But, you're now setup and ready to create exciting new user experiences!
